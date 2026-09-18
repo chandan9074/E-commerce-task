@@ -64,6 +64,28 @@ const addressSchema = z.object({
 
 export type AddressValues = z.infer<typeof addressSchema>;
 
+/**
+ * Billing is a *draft* at the field level - every key optional, no length or
+ * format rules. The real address rules are applied in `superRefine` below, and
+ * only when the billing address is actually in use.
+ *
+ * `addressSchema.partial()` would not work here: `.partial()` makes a key
+ * optional but still validates it when present, so the empty strings the form
+ * initialises billing with would fail `min()` even while the billing section is
+ * hidden - blocking submit with errors on fields the user cannot see.
+ */
+const billingDraftSchema = z
+  .object({
+    fullName: z.string().max(80),
+    address1: z.string().max(120),
+    address2: z.string().max(120),
+    city: z.string().max(60),
+    state: z.string().max(60),
+    postalCode: z.string().max(12),
+    country: z.string().max(2),
+  })
+  .partial();
+
 export const checkoutSchema = z
   .object({
     email: z.email("Enter a valid email address").max(120),
@@ -77,7 +99,7 @@ export const checkoutSchema = z
     shipping: addressSchema,
 
     billingSameAsShipping: z.boolean(),
-    billing: addressSchema.partial().optional(),
+    billing: billingDraftSchema.optional(),
 
     paymentMethod: z.enum(PAYMENT_METHODS),
     cardholder: z.string().trim().max(80).optional().or(z.literal("")),

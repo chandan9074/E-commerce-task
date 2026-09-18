@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
-import { useForm, useWatch } from "react-hook-form";
+import { useForm, useWatch, type FieldErrors } from "react-hook-form";
 import { TbAlertTriangle, TbBuildingBank, TbCash, TbCreditCard, TbLock, TbShoppingBag } from "react-icons/tb";
 
 import { CheckoutOrderSummary } from "./CheckoutOrderSummary";
@@ -44,6 +44,16 @@ const DEFAULT_VALUES: CheckoutFormValues = {
   marketingOptIn: false,
   terms: false,
 };
+
+/** Counts leaf issues in React Hook Form's nested error object. */
+function countIssues(node: unknown): number {
+  if (!node || typeof node !== "object") return 0;
+  if ("message" in (node as object) && typeof (node as { message?: unknown }).message === "string") return 1;
+  return Object.values(node as Record<string, unknown>).reduce<number>(
+    (total, value) => total + countIssues(value),
+    0,
+  );
+}
 
 /**
  * Checkout form.
@@ -112,6 +122,25 @@ export function CheckoutForm() {
     [clear, items, router, setError, totals],
   );
 
+  /**
+   * Invalid submits must never be silent.
+   *
+   * React Hook Form blocks submission when the schema fails, and if the
+   * offending field happens to be hidden (a collapsed section) or has no
+   * inline message, the button would look like it did nothing. This turns any
+   * blocked submit into a visible, counted explanation. React Hook Form's
+   * `shouldFocusError` already moves focus to the first offending field, which
+   * scrolls it into view, so this only has to explain *why* nothing happened.
+   */
+  const onInvalid = useCallback((formErrors: FieldErrors<CheckoutFormValues>) => {
+    const count = countIssues(formErrors);
+    setSubmitError(
+      count === 1
+        ? "One field still needs your attention - it is highlighted above."
+        : `${count} fields still need your attention - they are highlighted above.`,
+    );
+  }, []);
+
   if (!hydrated) {
     return (
       <div className="grid gap-8 lg:grid-cols-[1fr_380px]">
@@ -140,7 +169,7 @@ export function CheckoutForm() {
   const sectionClasses = "surface-card space-y-4 p-5 sm:p-6";
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} noValidate className="grid gap-8 lg:grid-cols-[1fr_380px]">
+    <form onSubmit={handleSubmit(onSubmit, onInvalid)} noValidate className="grid gap-8 lg:grid-cols-[1fr_380px]">
       <div className="space-y-6">
         {/* ---------------------------------------------------- contact -- */}
         <section className={sectionClasses} aria-labelledby="contact-heading">
@@ -375,6 +404,12 @@ export function CheckoutForm() {
                 );
               })}
             </div>
+
+            {errors.paymentMethod?.message && (
+              <p className="mt-2 text-xs font-medium text-danger-600" role="alert">
+                {errors.paymentMethod.message}
+              </p>
+            )}
           </fieldset>
 
           {paymentMethod === "card" && (
