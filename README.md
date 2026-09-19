@@ -53,6 +53,14 @@ Other scripts:
 
 Current state: `npm run verify` passes — 0 type errors, 0 lint errors/warnings, build green.
 
+### Deploying
+
+No environment variables are required. On Vercel, import the repo and deploy - the deployment's own domain is
+detected automatically for canonical URLs, Open Graph tags, `sitemap.xml` and `robots.txt`
+(`VERCEL_PROJECT_PRODUCTION_URL`, falling back to `VERCEL_URL`). Set `NEXT_PUBLIC_SITE_URL` only when you have a
+custom domain — and give it a real URL rather than defining it empty, which tells the app nothing.
+
+
 ---
 
 ## What is implemented
