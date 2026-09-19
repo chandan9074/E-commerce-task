@@ -85,17 +85,20 @@ export function ProductCard({
           <Price value={product.price} compareAt={product.compareAtPrice} currency={product.currency} size="lg" />
 
           <div className="flex items-center justify-between gap-2">
+            {/* `min-w-0` + `truncate`: on a 2-column mobile grid the card is
+                ~150px wide, and without them this label wrapped and shoved the
+                add-to-cart button out of alignment. */}
             {product.freeShipping ? (
-              <span className="inline-flex items-center gap-1 text-xs text-muted">
-                <TbTruck className="size-3.5" aria-hidden />
-                Free shipping
+              <span className="inline-flex min-w-0 items-center gap-1 text-xs text-muted">
+                <TbTruck className="size-3.5 shrink-0" aria-hidden />
+                <span className="truncate">Free shipping</span>
               </span>
             ) : (
-              <span className="text-xs text-muted">{stock.label}</span>
+              <span className="min-w-0 truncate text-xs text-muted">{stock.label}</span>
             )}
 
             {/* Raised above the stretched link so the button stays clickable. */}
-            <div className="relative z-10">
+            <div className="relative z-10 shrink-0">
               <AddToCartButton product={product} size="sm" iconOnly label="Add to cart" />
             </div>
           </div>

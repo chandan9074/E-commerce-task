@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { TbArrowRight } from "react-icons/tb";
 
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import type { Category } from "@/types";
@@ -15,32 +16,44 @@ export function CategoryGrid({ categories }: { categories: Category[] }) {
         action={{ label: "All products", href: "/products" }}
       />
 
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-        {categories.map((category, index) => (
+      {/* Uniform tiles: the previous 2x2 feature tile left two dead cells at the
+          end of the grid on large screens. An eighth "all products" tile keeps
+          the 2- and 4-column layouts perfectly filled. */}
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
+        {categories.map((category) => (
           <Link
             key={category.slug}
             href={`/products?category=${category.slug}`}
-            className={`group relative overflow-hidden rounded-card border border-[var(--border)] ${
-              index === 0 ? "col-span-2 row-span-2 md:col-span-2" : ""
-            }`}
+            className="group relative overflow-hidden rounded-card border border-[var(--border)]"
           >
-            <div className={`relative ${index === 0 ? "aspect-square md:aspect-4/3" : "aspect-4/3"}`}>
+            <div className="relative aspect-4/3">
               <Image
                 src={category.image}
                 alt=""
                 fill
-                sizes={index === 0 ? "(max-width: 768px) 100vw, 50vw" : "(max-width: 768px) 50vw, 25vw"}
+                sizes="(max-width: 768px) 50vw, (max-width: 1280px) 33vw, 25vw"
                 className="object-cover transition-transform duration-500 group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/25 to-transparent" />
             </div>
 
-            <div className="absolute inset-x-0 bottom-0 p-4">
-              <h3 className="text-base font-semibold text-white">{category.name}</h3>
+            <div className="absolute inset-x-0 bottom-0 p-3 sm:p-4">
+              <h3 className="truncate text-sm font-semibold text-white sm:text-base">{category.name}</h3>
               <p className="text-xs text-white/75">{category.productCount} products</p>
             </div>
           </Link>
         ))}
+
+        <Link
+          href="/products"
+          className="group relative flex min-h-full flex-col justify-end overflow-hidden rounded-card border border-[var(--border)] gradient-brand p-3 sm:p-4"
+        >
+          <span className="text-sm font-semibold text-white sm:text-base">All products</span>
+          <span className="inline-flex items-center gap-1 text-xs text-white/80">
+            Browse the full catalogue
+            <TbArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" aria-hidden />
+          </span>
+        </Link>
       </div>
     </section>
   );

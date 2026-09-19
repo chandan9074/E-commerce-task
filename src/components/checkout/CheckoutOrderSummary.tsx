@@ -21,7 +21,7 @@ export const CheckoutOrderSummary = memo(function CheckoutOrderSummary({
   totals: CartTotals;
 }) {
   return (
-    <aside aria-label="Order summary" className="lg:sticky lg:top-28 lg:h-fit">
+    <aside aria-label="Order summary" className="min-w-0 lg:sticky lg:top-28 lg:h-fit">
       <div className="surface-card space-y-4 p-5">
         <h2 className="text-base font-semibold">Order summary</h2>
 

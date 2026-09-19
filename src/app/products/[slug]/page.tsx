@@ -97,7 +97,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
       <div className="grid gap-10 lg:grid-cols-2 lg:gap-14">
         <ProductGallery images={product.images} title={product.title} />
 
-        <div className="space-y-5">
+        <div className="min-w-0 space-y-5">
           <div className="space-y-2">
             <div className="flex flex-wrap items-center gap-2">
               <Link

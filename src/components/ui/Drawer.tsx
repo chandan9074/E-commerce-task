@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useRef, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import { TbX } from "react-icons/tb";
 
 import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
+import { useHydrated } from "@/hooks/useHydrated";
 import { cn } from "@/lib/utils/cn";
 
 interface DrawerProps {
@@ -25,6 +27,7 @@ interface DrawerProps {
  */
 export function Drawer({ open, onClose, title, side = "right", children, footer, className }: DrawerProps) {
   const panelRef = useRef<HTMLDivElement>(null);
+  const hydrated = useHydrated();
 
   useBodyScrollLock(open);
 
@@ -41,9 +44,16 @@ export function Drawer({ open, onClose, title, side = "right", children, footer,
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [open, onClose]);
 
-  // Stays mounted but inert when closed, so the slide transition can run.
-  return (
-    <div className={cn("fixed inset-0 z-50", !open && "pointer-events-none")} aria-hidden={!open}>
+  /**
+   * Stays mounted when closed so the slide transition can run, but:
+   *   - `overflow-hidden` clips the off-canvas panel. Without it the panel,
+   *     translated 100% past the right edge, extends the document's scroll
+   *     width and the page scrolls sideways on mobile with the panel visible.
+   *   - `inert` takes the closed panel out of the tab order and the
+   *     accessibility tree, which `pointer-events-none` alone does not do.
+   */
+  const overlay = (
+    <div className={cn("fixed inset-0 z-50 overflow-hidden", !open && "pointer-events-none")} inert={!open}>
       <div
         className={cn(
           "absolute inset-0 bg-[var(--overlay)] backdrop-blur-[2px] transition-opacity duration-300",
@@ -83,4 +93,16 @@ export function Drawer({ open, onClose, title, side = "right", children, footer,
       </div>
     </div>
   );
+
+  /**
+   * Rendered into `document.body` rather than in place.
+   *
+   * `position: fixed` resolves against the viewport only while no ancestor
+   * creates a containing block - and the site header does exactly that with
+   * `backdrop-blur`. Left in the header, the mobile navigation drawer was
+   * clamped to the header's own 118px height instead of filling the screen.
+   * A portal makes the drawer independent of wherever it is triggered from.
+   */
+  if (!hydrated) return null;
+  return createPortal(overlay, document.body);
 }

@@ -29,7 +29,7 @@ export function MobileFilterDrawer({ facets }: { facets: ProductFacets }) {
       }
     >
       <div className="px-5 pb-6">
-        <FilterPanel facets={facets} />
+        <FilterPanel facets={facets} hideHeading />
       </div>
     </Drawer>
   );

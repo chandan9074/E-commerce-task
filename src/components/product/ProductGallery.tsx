@@ -21,7 +21,7 @@ export function ProductGallery({ images, title }: { images: ProductImage[]; titl
   const select = useCallback((index: number) => setActiveIndex(index), []);
 
   return (
-    <div className="flex flex-col-reverse gap-4 lg:flex-row">
+    <div className="flex min-w-0 flex-col-reverse gap-4 lg:flex-row">
       {images.length > 1 && (
         <div className="flex gap-3 overflow-x-auto scrollbar-none lg:flex-col lg:overflow-visible">
           {images.map((image, index) => (
@@ -42,7 +42,7 @@ export function ProductGallery({ images, title }: { images: ProductImage[]; titl
         </div>
       )}
 
-      <div className="relative aspect-square flex-1 overflow-hidden rounded-card bg-surface-muted">
+      <div className="relative aspect-square min-w-0 flex-1 overflow-hidden rounded-card bg-surface-muted">
         <Image
           key={active.url}
           src={active.url}

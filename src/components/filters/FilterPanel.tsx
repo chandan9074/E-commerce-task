@@ -79,7 +79,16 @@ const OptionRow = memo(function OptionRow({ label, count, checked, value, onTogg
 
 /* ----------------------------------------------------------------- panel -- */
 
-export function FilterPanel({ facets, className }: { facets: ProductFacets; className?: string }) {
+export function FilterPanel({
+  facets,
+  className,
+  /** The drawer supplies its own "Filters" title, so it hides this one. */
+  hideHeading = false,
+}: {
+  facets: ProductFacets;
+  className?: string;
+  hideHeading?: boolean;
+}) {
   const {
     query,
     toggleCategory,
@@ -115,8 +124,10 @@ export function FilterPanel({ facets, className }: { facets: ProductFacets; clas
 
   return (
     <aside className={cn("w-full", className)} aria-label="Product filters">
-      <div className="flex items-center justify-between pb-2">
-        <h2 className="text-sm font-semibold tracking-wide text-foreground uppercase">Filters</h2>
+      <div className={cn("flex items-center pb-2", hideHeading ? "justify-end" : "justify-between")}>
+        {!hideHeading && (
+          <h2 className="text-sm font-semibold tracking-wide text-foreground uppercase">Filters</h2>
+        )}
         {activeFilterCount > 0 && (
           <button
             type="button"

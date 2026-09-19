@@ -82,7 +82,7 @@ export default async function ProductsPage({ searchParams }: PageProps) {
         <ActiveFilters facets={facets} />
       </div>
 
-      <div className="grid gap-8 lg:grid-cols-[260px_1fr]">
+      <div className="grid gap-8 lg:grid-cols-[260px_minmax(0,1fr)]">
         <div className="hidden lg:block">
           <div className="sticky top-32 max-h-[calc(100dvh-9rem)] overflow-y-auto pr-2">
             <FilterPanel facets={facets} />

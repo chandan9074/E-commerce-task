@@ -24,7 +24,7 @@ export function ProductReviews({
         Customer reviews
       </h2>
 
-      <div className="grid gap-8 lg:grid-cols-[260px_1fr]">
+      <div className="grid gap-8 lg:grid-cols-[260px_minmax(0,1fr)]">
         <div className="space-y-4">
           <div className="surface-card p-5 text-center">
             <p className="font-display text-4xl font-semibold text-foreground">{rating.toFixed(1)}</p>

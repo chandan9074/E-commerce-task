@@ -50,9 +50,12 @@ export function CartView() {
     );
   }
 
+  // `min-w-0` on both columns: a grid item defaults to `min-width: auto`, so
+  // before the `lg` breakpoint the single column was sized by the order
+  // summary's min-content width (447px) and pushed the whole page sideways.
   return (
     <div className="grid gap-8 lg:grid-cols-[1fr_360px]">
-      <section aria-label="Cart items">
+      <section aria-label="Cart items" className="min-w-0">
         <div className="surface-card px-5">
           <ul className="divide-y divide-[var(--border)]">
             {items.map((item) => (
@@ -83,7 +86,7 @@ export function CartView() {
         </div>
       </section>
 
-      <aside aria-label="Order summary">
+      <aside aria-label="Order summary" className="min-w-0">
         <div className="surface-card sticky top-28 space-y-4 p-5">
           <h2 className="text-base font-semibold">Order summary</h2>
 

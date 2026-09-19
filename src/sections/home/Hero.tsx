@@ -28,8 +28,12 @@ export function Hero({
       />
 
       <div className="container-page relative py-16 lg:py-24">
+        {/* `min-w-0` on both columns: without it a grid track refuses to shrink
+            below its content's min-content width, and the stats row below was
+            forcing the whole column to 428px on a 375px screen - clipping the
+            headline and the paragraph against the section's `overflow-hidden`. */}
         <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_1fr]">
-          <div>
+          <div className="min-w-0">
             <span className="inline-flex items-center gap-1.5 rounded-pill bg-brand-600/10 px-3 py-1.5 text-xs font-semibold text-brand-700 dark:text-brand-300">
               <TbSparkles className="size-3.5" aria-hidden />
               {stats.productCount}+ products, curated not collected
@@ -58,28 +62,30 @@ export function Hero({
               </Link>
             </div>
 
-            <dl className="mt-10 grid max-w-md grid-cols-3 gap-6 border-t border-[var(--border)] pt-6">
+            <dl className="mt-10 flex max-w-md flex-wrap gap-x-10 gap-y-4 border-t border-[var(--border)] pt-6">
               {[
                 { label: "Products", value: `${stats.productCount}+` },
                 { label: "Categories", value: stats.categoryCount },
                 { label: "Brands", value: stats.brandCount },
               ].map((stat) => (
-                <div key={stat.label}>
-                  <dt className="text-xs tracking-wide text-muted uppercase">{stat.label}</dt>
-                  <dd className="font-display text-2xl font-semibold tabular-nums">{stat.value}</dd>
+                <div key={stat.label} className="min-w-0">
+                  <dt className="text-[11px] tracking-wide text-muted uppercase sm:text-xs">{stat.label}</dt>
+                  <dd className="font-display text-xl font-semibold tabular-nums sm:text-2xl">{stat.value}</dd>
                 </div>
               ))}
             </dl>
           </div>
 
-          <div className="relative">
-            <div className="surface-card relative overflow-hidden p-3 shadow-card">
-              <div className="relative aspect-4/5 overflow-hidden rounded-xl bg-surface-muted sm:aspect-square lg:aspect-4/5">
+          <div className="relative min-w-0">
+            <div className="surface-card relative mx-auto max-w-md overflow-hidden p-3 shadow-card lg:max-w-none">
+              {/* Catalogue imagery is square, so a square frame fills it edge to
+                  edge with nothing cropped away. */}
+              <div className="relative aspect-square overflow-hidden rounded-xl bg-surface-muted">
                 <Image
                   src={featured.thumbnail}
                   alt={featured.title}
                   fill
-                  sizes="(max-width: 1024px) 90vw, 42vw"
+                  sizes="(max-width: 1024px) min(90vw, 26rem), 42vw"
                   priority
                   className="object-cover"
                 />

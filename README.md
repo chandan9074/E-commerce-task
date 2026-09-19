@@ -375,7 +375,27 @@ A deep-indigo brand with an amber accent on slate neutrals, defined once as Tail
 (`--surface`, `--border`, `--foreground`, …) are redefined wholesale under `.dark`, so light and dark are one
 palette swap rather than two sets of classes. An inline script applies the saved theme before first paint, so
 there is no flash. Typography is Inter with Sora for display headings, via `next/font` (self-hosted, no layout
-shift). Layout is responsive from 320 px up.
+shift).
+
+### Responsive
+
+Every page was checked in a real browser at **320 / 375 / 414 / 540 / 768 / 1024 / 1280 / 1440 / 1920 px**, with
+an assertion that `document.scrollWidth === clientWidth` (no sideways scroll) at each. Three failures that pass
+code review but only show up in a browser were found and fixed that way:
+
+- **Grid tracks refusing to shrink.** A grid item defaults to `min-width: auto`, so before the `lg` breakpoint
+  the single column on cart/checkout was sized by the order summary's *min-content* width and pushed the page
+  sideways. Fixed with `min-w-0` on the columns, and `minmax(0, 1fr)` on the listing and reviews grids. The same
+  rule clipped the hero: a rigid `grid-cols-3` stats row forced its column to 428 px on a 375 px screen, cutting
+  off the headline and paragraph.
+- **A `backdrop-filter` ancestor capturing fixed positioning.** The header uses `backdrop-blur`, which makes it
+  the containing block for `position: fixed` descendants, so the mobile navigation drawer was clamped to the
+  header's 118 px height instead of filling the screen. `Drawer` and `Modal` now render through a portal into
+  `document.body`.
+- **An off-canvas panel extending the scroll area.** The closed drawer, translated 100% past the right edge,
+  added ~90 px to the document scroll width, so mobile pages scrolled sideways with the panel edge visible. The
+  overlay root now clips it, and `inert` keeps the closed panel out of the tab order and the a11y tree.
+
 
 ---
 

@@ -170,7 +170,9 @@ export function CheckoutForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit, onInvalid)} noValidate className="grid gap-8 lg:grid-cols-[1fr_380px]">
-      <div className="space-y-6">
+      {/* `min-w-0`: see the note in CartView - without it the order summary's
+          min-content width sets the single-column track and the form overflows. */}
+      <div className="min-w-0 space-y-6">
         {/* ---------------------------------------------------- contact -- */}
         <section className={sectionClasses} aria-labelledby="contact-heading">
           <h2 id="contact-heading" className="text-base font-semibold">
