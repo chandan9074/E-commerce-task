@@ -10,7 +10,6 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-/** Shell is server-rendered; the form itself is the client boundary. */
 export default function CheckoutPage() {
   return (
     <div className="container-page py-8">

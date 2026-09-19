@@ -5,10 +5,7 @@ import { formatCompact } from "@/lib/utils/format";
 
 const SIZES = { sm: "size-3.5", md: "size-4", lg: "size-5" } as const;
 
-/**
- * Star rating. Pure presentation - rendered on the server inside product cards,
- * so it ships zero JavaScript.
- */
+/** Star rating. Presentation only, so it can render on the server. */
 export function Rating({
   value,
   count,

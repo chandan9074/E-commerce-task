@@ -9,17 +9,6 @@ import { ApiError } from "./http-error";
 import { SITE } from "@/lib/constants";
 import type { ApiEnvelope, ApiErrorCode, ApiMeta } from "@/types";
 
-/**
- * HTTP transport.
- *
- * Responsibilities kept *out* of components and hooks:
- *   - base URL resolution (relative in the browser, absolute on the server)
- *   - correlation ids and timing
- *   - unwrapping the `{ success, data, meta }` envelope
- *   - turning every failure - HTTP, network, timeout, abort - into `ApiError`
- *   - de-duplicating identical in-flight GETs
- */
-
 declare module "axios" {
   export interface InternalAxiosRequestConfig {
     metadata?: { startedAt: number; requestId: string };
@@ -27,7 +16,7 @@ declare module "axios" {
 }
 
 function resolveBaseUrl() {
-  // In the browser a relative base keeps requests same-origin and cookie-safe.
+  // Relative base keeps browser requests same-origin.
   if (typeof window !== "undefined") return "/api";
   return `${SITE.url.replace(/\/$/, "")}/api`;
 }
@@ -38,7 +27,6 @@ export const httpClient = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 
-/* ------------------------------------------------------- request stage -- */
 httpClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   const requestId =
     typeof crypto !== "undefined" && "randomUUID" in crypto
@@ -52,7 +40,6 @@ httpClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   return config;
 });
 
-/* ------------------------------------------------------ response stage -- */
 httpClient.interceptors.response.use(
   (response: AxiosResponse<ApiEnvelope<unknown>>) => {
     const envelope = response.data;
@@ -88,7 +75,7 @@ function logTiming(config: InternalAxiosRequestConfig, status: number, meta?: Ap
   );
 }
 
-/** Collapses every axios failure mode into the app's single error type. */
+/** Converts any axios failure into an ApiError. */
 export function normaliseError(error: unknown): ApiError {
   if (error instanceof ApiError) return error;
 
@@ -131,7 +118,6 @@ function statusToCode(status: number): ApiErrorCode {
   return "SERVER_ERROR";
 }
 
-/* ------------------------------------------------- in-flight de-duping -- */
 interface InFlightEntry {
   promise: Promise<unknown>;
   controller: AbortController;
@@ -147,12 +133,10 @@ function dedupeKey(config: AxiosRequestConfig) {
 }
 
 /**
- * Typed request helper - returns `data` straight from the envelope.
+ * Typed request helper. Returns the envelope's `data`.
  *
- * Concurrent identical GETs share a single network round-trip. Each caller
- * keeps its own `AbortController`; the shared request is only cancelled once
- * every subscriber has abandoned it, so one component unmounting cannot kill a
- * request another component is still waiting on.
+ * Identical concurrent GETs share one request; it is aborted only once every
+ * caller has abandoned it.
  */
 export async function request<T>(config: AxiosRequestConfig): Promise<T> {
   const method = (config.method ?? "get").toLowerCase();
@@ -163,8 +147,7 @@ export async function request<T>(config: AxiosRequestConfig): Promise<T> {
   }
 
   const { signal, ...rest } = config;
-  // Axios types `signal` loosely (`GenericAbortSignal`); the app only ever
-  // passes a real AbortSignal, and we need its event-target methods below.
+  // Axios types this as GenericAbortSignal, which lacks addEventListener.
   const callerSignal = signal as AbortSignal | undefined;
   const key = dedupeKey(config);
 
@@ -204,7 +187,6 @@ export async function request<T>(config: AxiosRequestConfig): Promise<T> {
     throw new ApiError("ABORTED", "Request cancelled.", { aborted: true });
   }
 
-  // Race the shared request against this caller's own cancellation.
   return new Promise<T>((resolve, reject) => {
     const onAbort = () => {
       release();

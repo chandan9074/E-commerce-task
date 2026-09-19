@@ -8,7 +8,7 @@ import { SORT_OPTIONS, type PaginationMeta, type SortOption } from "@/types";
 import { useAppDispatch } from "@/store/hooks";
 import { mobileFiltersToggled } from "@/store/slices/ui.slice";
 
-/** Result count, sort, page size, and the mobile filter trigger. */
+/** Result count, sort, page size and the mobile filter trigger. */
 export function ResultsToolbar({ pagination }: { pagination: PaginationMeta }) {
   const { query, setSort, setLimit, activeFilterCount, isPending } = useProductFilters();
   const dispatch = useAppDispatch();

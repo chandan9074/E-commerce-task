@@ -7,12 +7,7 @@ import { useAppDispatch } from "@/store/hooks";
 import { quickViewOpened } from "@/store/slices/ui.slice";
 import { cn } from "@/lib/utils/cn";
 
-/**
- * Opens the quick-view dialog for a product.
- *
- * Only the slug crosses the boundary - the dialog fetches the full record
- * through the product service when (and only when) it is actually opened.
- */
+/** Opens the quick-view dialog. Only the slug crosses the boundary. */
 export const QuickViewTrigger = memo(function QuickViewTrigger({
   slug,
   title,

@@ -4,7 +4,7 @@ import { useEffect } from "react";
 
 import { ErrorState } from "@/components/ui/States";
 
-/** Root error boundary - the last stop before Next's default error screen. */
+/** Root error boundary. */
 export default function GlobalError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   useEffect(() => {
     console.error("[app] unhandled error", error);

@@ -22,9 +22,8 @@ interface PageProps {
 }
 
 /**
- * Listing metadata reflects the active filters, and filtered permutations are
- * marked `noindex` so search engines index the clean category pages rather than
- * thousands of near-duplicate filter URLs.
+ * Filtered permutations are marked `noindex` so crawlers index the clean
+ * category pages rather than thousands of near-duplicate filter URLs.
  */
 export async function generateMetadata({ searchParams }: PageProps): Promise<Metadata> {
   const query = parseProductQuery(await searchParams);
@@ -49,13 +48,9 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
 }
 
 /**
- * Product listing - a **Server Component**.
- *
- * `searchParams` is the only source of filter state, so the page is fully
- * rendered on the server for the exact URL requested: shareable, refresh-safe,
- * crawlable, and free of a client-side fetch waterfall on first paint. The
- * client islands around it (filters, sort, pagination, search) do nothing but
- * rewrite the URL and let the server render the next state.
+ * `searchParams` is the only source of filter state, so the page renders on
+ * the server for the exact URL requested. The controls around it only rewrite
+ * the URL and let the server render the next state.
  */
 export default async function ProductsPage({ searchParams }: PageProps) {
   const query = parseProductQuery(await searchParams);

@@ -4,10 +4,7 @@ import { useEffect } from "react";
 
 import { ErrorState } from "@/components/ui/States";
 
-/**
- * Route error boundary. `reset` re-renders the segment, which is the correct
- * retry for a Server Component failure - a client-side refetch would not help.
- */
+/** `reset` re-renders the segment, which is the retry for a server failure. */
 export default function ProductsError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   useEffect(() => {
     console.error("[products] render failed", error);

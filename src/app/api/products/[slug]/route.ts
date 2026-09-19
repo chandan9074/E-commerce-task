@@ -6,7 +6,7 @@ interface Context {
   params: Promise<{ slug: string }>;
 }
 
-/** GET /api/products/:slug - full product record, 404 for unknown slugs. */
+/** GET /api/products/:slug - full record, 404 for an unknown slug. */
 export const GET = createRouteHandler<Context>(async (_request, { params }) => {
   await simulateLatency();
 

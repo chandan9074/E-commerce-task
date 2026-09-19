@@ -2,12 +2,7 @@ import { ProductCard } from "./ProductCard";
 import { cn } from "@/lib/utils/cn";
 import type { ProductSummary } from "@/types";
 
-/**
- * Horizontally scrolling row of cards (home-page rails, related products).
- *
- * Scrolling is CSS scroll-snap rather than a carousel library: no JavaScript,
- * and it keeps native touch/trackpad behaviour.
- */
+/** Scroll-snapping row of cards. CSS only, no carousel library. */
 export function ProductRail({ products, className }: { products: ProductSummary[]; className?: string }) {
   if (products.length === 0) return null;
 

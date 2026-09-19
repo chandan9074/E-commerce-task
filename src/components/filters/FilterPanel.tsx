@@ -10,8 +10,6 @@ import { cn } from "@/lib/utils/cn";
 import { formatCompact } from "@/lib/utils/format";
 import type { ProductFacets } from "@/types";
 
-/* ---------------------------------------------------------------- pieces -- */
-
 function FilterSection({
   title,
   children,
@@ -51,13 +49,7 @@ interface OptionRowProps {
   onToggle: (value: string) => void;
 }
 
-/**
- * Memoised option row.
- *
- * A category list re-renders on every URL change; without `memo` all ~32 brand
- * rows would repaint when one checkbox flips. `onToggle` comes from
- * `useProductFilters` and is `useCallback`-stable, so the memo actually holds.
- */
+/** Memoised so ticking one box does not repaint every other row. */
 const OptionRow = memo(function OptionRow({ label, count, checked, value, onToggle }: OptionRowProps) {
   return (
     <li>
@@ -76,8 +68,6 @@ const OptionRow = memo(function OptionRow({ label, count, checked, value, onTogg
     </li>
   );
 });
-
-/* ----------------------------------------------------------------- panel -- */
 
 export function FilterPanel({
   facets,
@@ -104,8 +94,8 @@ export function FilterPanel({
   const [brandTerm, setBrandTerm] = useState("");
   const [showAllBrands, setShowAllBrands] = useState(false);
 
-  // Filtering 32 brands is cheap, but it runs on every keystroke *and* every
-  // URL change - memoising keeps it tied to the two inputs that matter.
+  // Runs on every keystroke and every URL change, so keep it tied to the
+  // inputs that actually affect it.
   const visibleBrands = useMemo(() => {
     const term = brandTerm.trim().toLowerCase();
     const matched = term ? facets.brands.filter((brand) => brand.label.toLowerCase().includes(term)) : facets.brands;

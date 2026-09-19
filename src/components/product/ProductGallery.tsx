@@ -6,18 +6,11 @@ import { useCallback, useState } from "react";
 import { cn } from "@/lib/utils/cn";
 import type { ProductImage } from "@/types";
 
-/**
- * Image gallery.
- *
- * One of the few genuinely stateful pieces of the product page, so it is the
- * only part of it that becomes a Client Component - the description, specs and
- * reviews around it stay server-rendered.
- */
+/** The only stateful part of the product page, so the only client part. */
 export function ProductGallery({ images, title }: { images: ProductImage[]; title: string }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const active = images[activeIndex] ?? images[0];
 
-  // Stable identity keeps the thumbnail buttons from re-rendering on selection.
   const select = useCallback((index: number) => setActiveIndex(index), []);
 
   return (

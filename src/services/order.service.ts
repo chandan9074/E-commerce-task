@@ -5,11 +5,8 @@ import type { CheckoutValues } from "@/validations/checkout.schema";
 import type { RequestOptions } from "./product.service";
 
 /**
- * Order service.
- *
- * Also owns the form-values -> API-payload mapping, so the checkout component
- * stays a form and nothing else. Note the card number never leaves this file:
- * only the last four digits are sent.
+ * Also maps form values to the API payload. Only the last four card digits
+ * are sent.
  */
 export const orderService = {
   buildPayload(values: CheckoutValues, items: CartItem[], totals: CartTotals): OrderPayload {

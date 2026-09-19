@@ -21,13 +21,8 @@ function readOrder(): OrderConfirmation | null {
 }
 
 /**
- * Order confirmation.
- *
- * The confirmation lives in sessionStorage, which only exists in the browser,
- * so nothing is read until `useHydrated` reports that hydration is done - that
- * keeps the server and client markup identical. The single effect exists only
- * to clear the entry, so a refresh or a back-navigation cannot resurrect a
- * completed order.
+ * Reads the confirmation from sessionStorage after hydration, then clears it so
+ * a refresh or back-navigation cannot resurrect a completed order.
  */
 export function OrderConfirmationView() {
   const hydrated = useHydrated();
@@ -38,7 +33,7 @@ export function OrderConfirmationView() {
     try {
       window.sessionStorage.removeItem(ORDER_STORAGE_KEY);
     } catch {
-      // Storage unavailable - nothing to clean up.
+      // Storage unavailable.
     }
   }, [order]);
 

@@ -16,10 +16,7 @@ interface QuantityStepperProps {
   className?: string;
 }
 
-/**
- * Memoised: cart rows re-render whenever any line changes, but a stepper only
- * needs to repaint when its own value or bounds move.
- */
+/** Memoised so a stepper repaints only when its own value or bounds move. */
 export const QuantityStepper = memo(function QuantityStepper({
   value,
   min = 1,

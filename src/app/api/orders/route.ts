@@ -5,10 +5,8 @@ import { orderPayloadSchema } from "@/validations/checkout.schema";
 import type { OrderConfirmation } from "@/types";
 
 /**
- * POST /api/orders - mock order placement.
- *
- * Re-validates the payload server-side and re-checks stock against the
- * catalogue, because client-side validation is a convenience, not a guarantee.
+ * POST /api/orders - mock order placement. Re-validates the payload and
+ * re-checks stock server-side.
  */
 export const POST = createRouteHandler(async (request) => {
   await simulateLatency(400, 900);

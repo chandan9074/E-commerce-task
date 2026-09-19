@@ -24,7 +24,7 @@ const SIZES: Record<ButtonSize, string> = {
   icon: "h-10 w-10 justify-center",
 };
 
-/** Shared class recipe so `<Link>` can look identical to `<Button>`. */
+/** Shared classes so a `<Link>` can match a `<Button>`. */
 export function buttonClasses(variant: ButtonVariant = "primary", size: ButtonSize = "md", className?: string) {
   return cn(
     "inline-flex items-center justify-center rounded-pill font-medium transition-colors duration-150",

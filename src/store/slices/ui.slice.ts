@@ -12,13 +12,7 @@ const initialState: UiState = {
   quickViewSlug: null,
 };
 
-/**
- * Cross-component overlay state.
- *
- * Kept in the store (not React context) because the triggers - header button,
- * product card, cart page - live in unrelated branches of the tree, and each
- * subscriber selects only the one boolean it cares about.
- */
+/** Overlay state, shared because the triggers live all over the tree. */
 const uiSlice = createSlice({
   name: "ui",
   initialState,

@@ -12,12 +12,8 @@ import { formatCurrency } from "@/lib/utils/format";
 import { cn } from "@/lib/utils/cn";
 
 /**
- * Global search with live suggestions.
- *
- * This is the app's showcase of the client data path: `useProductSearch`
- * (debounce) -> `productService` -> axios interceptors -> `/api/products`.
- * Requests abort on every new term, so only the final keystroke's response can
- * ever reach the dropdown.
+ * Global search with live suggestions. Requests abort on every new term, so
+ * only the latest response reaches the dropdown.
  */
 export function HeaderSearch({ className }: { className?: string }) {
   const router = useRouter();

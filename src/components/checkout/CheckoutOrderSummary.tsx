@@ -7,12 +7,7 @@ import { CartSummary } from "@/components/cart/CartSummary";
 import { formatCurrency } from "@/lib/utils/format";
 import type { CartItem, CartTotals } from "@/types";
 
-/**
- * Read-only order recap beside the form.
- *
- * `memo` keeps it out of the form's render path entirely: typing in any field
- * re-renders only that field, and this panel repaints only if the cart changes.
- */
+/** Memoised, so typing in the form does not repaint the summary. */
 export const CheckoutOrderSummary = memo(function CheckoutOrderSummary({
   items,
   totals,

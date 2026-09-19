@@ -2,10 +2,7 @@ import { ProductCard } from "./ProductCard";
 import { cn } from "@/lib/utils/cn";
 import type { ProductSummary } from "@/types";
 
-/**
- * Server-rendered grid. The first four cards get `priority` so the largest
- * contentful image is fetched eagerly instead of lazily.
- */
+/** The first row gets `priority` so the LCP image is not lazy-loaded. */
 export function ProductGrid({
   products,
   className,

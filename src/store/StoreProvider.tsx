@@ -7,17 +7,8 @@ import { makeStore, type AppStore } from "./index";
 import { cartHydrated, readPersistedCart } from "./middleware/cart-persistence";
 
 /**
- * Store boundary for the whole app.
- *
- * The store is created exactly once per client via a lazy `useState`
- * initialiser - calling `makeStore()` in the render body would build a new
- * store on every re-render, and a module-level singleton would leak one
- * visitor's cart into another's render on the server.
- *
- * The saved cart is read in an effect. Reading localStorage during render
- * would produce server HTML that disagrees with the first client render; doing
- * it after mount is exactly the "client synchronisation" case `useEffect`
- * exists for.
+ * Creates the store once per client (lazy `useState`) and loads the saved cart
+ * after mount - reading localStorage during render would break hydration.
  */
 export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [store] = useState<AppStore>(makeStore);

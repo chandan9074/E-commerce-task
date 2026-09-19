@@ -9,20 +9,15 @@ import type {
   SortOption,
 } from "@/types";
 
-/**
- * The query engine: pure functions over a product array.
- *
- * Nothing here imports the dataset or `next/*`. The route handlers inject the
- * catalogue, which keeps this file trivially unit-testable and makes swapping
- * the mock dataset for a real database a one-file change.
- */
+// Query engine: pure functions over a product array. The caller injects the
+// catalogue, so nothing here depends on the dataset or on Next.
 
 export type SearchTextResolver = (product: Product) => string;
 
 const defaultSearchText: SearchTextResolver = (p) =>
   [p.title, p.brand, p.categoryName, p.subcategoryName, ...p.tags].join(" ").toLowerCase();
 
-/** Field projection for list responses - see the note on `ProductSummary`. */
+/** Projection used by list responses. */
 export function toSummary(product: Product): ProductSummary {
   return {
     id: product.id,
@@ -49,10 +44,7 @@ export function tokenise(search: string) {
   return search.toLowerCase().split(/\s+/).map((t) => t.trim()).filter(Boolean);
 }
 
-/**
- * Relevance score for a product against the search tokens.
- * Returns -1 when the product does not match every token (AND semantics).
- */
+/** Relevance score, or -1 when the product misses any token (AND match). */
 export function relevanceScore(product: Product, haystack: string, tokens: string[]) {
   if (tokens.length === 0) return 0;
 
@@ -69,7 +61,7 @@ export function relevanceScore(product: Product, haystack: string, tokens: strin
     if (product.tags.some((tag) => tag.includes(token))) score += 8;
   }
 
-  // Popular, well-rated products break ties between equally textual matches.
+  // Rating and sales break ties between equal text matches.
   return score + product.rating * 2 + Math.min(product.unitsSold / 1000, 5);
 }
 
@@ -94,7 +86,7 @@ function buildPredicates(query: ProductQuery, scores: Map<string, number>): Pred
   };
 }
 
-/** Applies every predicate except the named ones (used for facet counting). */
+/** Applies every predicate except the named ones. */
 function applyPredicates(products: Product[], predicates: Predicates, skip: (keyof Predicates)[] = []) {
   const active = (Object.keys(predicates) as (keyof Predicates)[])
     .filter((key) => !skip.includes(key))
@@ -121,7 +113,7 @@ const comparators: Record<SortOption, (a: Product, b: Product, scores: Map<strin
 
 export function sortProducts(products: Product[], sort: SortOption, scores: Map<string, number>) {
   const compare = comparators[sort] ?? comparators.relevance;
-  // `id` as the final tie-break keeps pagination stable across requests.
+  // `id` as the final tie-break keeps pagination stable.
   return [...products].sort((a, b) => compare(a, b, scores) || a.id.localeCompare(b.id));
 }
 
@@ -154,10 +146,7 @@ function countBy(products: Product[], key: (p: Product) => string, label: (p: Pr
   return [...counts.values()].sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
 }
 
-/**
- * Facet counts are computed with the facet's own dimension excluded, so
- * selecting "Fashion" still shows how many products the other categories hold.
- */
+/** Each facet is counted with its own dimension excluded. */
 export function buildFacets(products: Product[], predicates: Predicates): ProductFacets {
   const forCategories = applyPredicates(products, predicates, ["category"]);
   const forBrands = applyPredicates(products, predicates, ["brand"]);
@@ -190,7 +179,7 @@ export interface QueryProductsResult {
   facets: ProductFacets;
 }
 
-/** filter -> sort -> paginate, plus facets, in a single pass over the catalogue. */
+/** filter -> sort -> paginate, plus facets. */
 export function queryProducts(
   products: Product[],
   query: ProductQuery,
@@ -213,10 +202,7 @@ export function queryProducts(
   return { items: items.map(toSummary), pagination, facets: buildFacets(products, predicates) };
 }
 
-/**
- * Related products: same subcategory first, then same category, then same
- * brand - scored rather than filtered so we always fill the row.
- */
+/** Scored by subcategory, category, brand, shared tags and price proximity. */
 export function findRelated(products: Product[], target: Product, limit = 8): ProductSummary[] {
   const priceBand = target.price * 0.6;
 

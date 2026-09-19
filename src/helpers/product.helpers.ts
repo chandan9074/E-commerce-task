@@ -1,6 +1,6 @@
 import type { Product, ProductSummary, Review } from "@/types";
 
-/** Presentation-level derivations shared by cards, detail pages and badges. */
+// Derived values used by cards, badges and the product page.
 
 export type StockLevel = "out-of-stock" | "low-stock" | "in-stock";
 
@@ -24,7 +24,7 @@ export function getSavings(product: Pick<ProductSummary, "price" | "compareAtPri
   return Math.round((product.compareAtPrice - product.price) * 100) / 100;
 }
 
-/** 5 -> 1 distribution used by the rating breakdown bars. */
+/** 5 -> 1 star distribution for the rating bars. */
 export function getRatingBreakdown(reviews: Review[]) {
   const counts = [0, 0, 0, 0, 0];
   for (const review of reviews) {

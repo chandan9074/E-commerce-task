@@ -3,11 +3,8 @@
 import { useEffect } from "react";
 
 /**
- * Freezes background scrolling while an overlay is open.
- *
- * The cleanup restores the exact previous value rather than clearing it, so
- * two overlays closing in any order cannot leave the page unscrollable - the
- * "always undo precisely what you did" rule for DOM side effects.
+ * Freezes background scrolling while an overlay is open. Cleanup restores the
+ * previous values, so overlays closing in any order cannot strand the page.
  */
 export function useBodyScrollLock(locked: boolean) {
   useEffect(() => {
@@ -19,7 +16,7 @@ export function useBodyScrollLock(locked: boolean) {
     const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
 
     body.style.overflow = "hidden";
-    // Compensating for the removed scrollbar stops the layout jumping sideways.
+    // Compensate for the removed scrollbar so the layout does not shift.
     if (scrollbarWidth > 0) body.style.paddingRight = `${scrollbarWidth}px`;
 
     return () => {

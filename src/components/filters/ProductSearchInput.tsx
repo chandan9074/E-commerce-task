@@ -8,12 +8,9 @@ import { useProductFilters } from "@/hooks/useProductFilters";
 import { cn } from "@/lib/utils/cn";
 
 /**
- * Search box for the listing page.
- *
- * The input is local state (typing must stay at 60fps) and the URL is the
- * committed state. `lastCommitted` keeps the two effects from fighting: one
- * pushes the debounced draft into the URL, the other pulls external URL changes
- * (chip removed, back button, "clear all") back into the draft.
+ * The input is a local draft, the URL is the committed value. `lastCommitted`
+ * stops the two effects fighting: one pushes the debounced draft into the URL,
+ * the other pulls external URL changes back into the draft.
  */
 export function ProductSearchInput({ className, autoFocus }: { className?: string; autoFocus?: boolean }) {
   const { query, setSearch } = useProductFilters();

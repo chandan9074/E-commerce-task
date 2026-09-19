@@ -3,13 +3,8 @@ import { endpoints } from "@/lib/api/endpoints";
 import { buildSearchParams } from "@/helpers/product-query.helpers";
 import type { Product, ProductListResult, ProductQuery, ProductSummary } from "@/types";
 
-/**
- * Product service - the client-side gateway to the catalogue.
- *
- * Components and hooks call these methods; they never import axios, never know
- * a URL, and never see the response envelope. Server Components use
- * `productRepository` instead, which reaches the same data in-process.
- */
+// Client-side gateway to the catalogue. Server Components use
+// `productRepository` instead, which reads the same data in-process.
 
 export interface RequestOptions {
   signal?: AbortSignal;
@@ -25,7 +20,7 @@ export const productService = {
     });
   },
 
-  /** Lightweight search used by the header suggestions dropdown. */
+  /** Used by the header suggestions dropdown. */
   search(term: string, limit = 6, options: RequestOptions = {}): Promise<ProductListResult> {
     return this.list({ search: term, limit, sort: "relevance" }, options);
   },

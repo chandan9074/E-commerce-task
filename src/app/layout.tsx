@@ -24,7 +24,7 @@ const sora = Sora({
   display: "swap",
 });
 
-/** Site-wide metadata; pages extend it through the title template. */
+/** Pages extend this through the title template. */
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: {
@@ -61,7 +61,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning className={`${inter.variable} ${sora.variable}`}>
       <head>
-        {/* Applies the saved theme before first paint - avoids a white flash. */}
+        {/* Applies the saved theme before first paint. */}
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body className="min-h-dvh antialiased">
@@ -81,7 +81,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
           <Footer />
 
-          {/* Overlays mounted once for the whole app. */}
+          {/* Mounted once for the whole app. */}
           <CartDrawer />
           <QuickViewDialog />
         </StoreProvider>

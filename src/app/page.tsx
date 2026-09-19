@@ -14,13 +14,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-/**
- * Home page - a **Server Component** with no client JavaScript of its own.
- *
- * Every rail is read from the repository during the render, so the page is
- * static HTML plus the shared header/cart islands. There is no `useEffect`
- * fetch, no loading spinner and no layout shift on first paint.
- */
+/** Every rail is read from the repository during the render. */
 export default function HomePage() {
   const stats = productRepository.getStats();
   const categories = productRepository.getCategories();

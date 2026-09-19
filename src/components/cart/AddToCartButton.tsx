@@ -20,11 +20,8 @@ interface AddToCartButtonProps {
 }
 
 /**
- * The interactive island inside an otherwise server-rendered product card.
- *
- * `memo` matters here: a grid renders 24 of these and the parent re-renders on
- * every navigation, but the props are a stable product snapshot, so none of
- * them repaint. The success flash is local state with a cleaned-up timer.
+ * Memoised: a grid renders one per card, and the product snapshot they take
+ * as props does not change between navigations.
  */
 export const AddToCartButton = memo(function AddToCartButton({
   product,

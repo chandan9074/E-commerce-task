@@ -1,11 +1,11 @@
 import { cn } from "@/lib/utils/cn";
 
-/** Base shimmer block. Every loading state is composed from this one piece. */
+/** Base shimmer block. */
 export function Skeleton({ className }: { className?: string }) {
   return <div className={cn("animate-shimmer rounded-md bg-surface-muted", className)} aria-hidden />;
 }
 
-/** Matches `ProductCard`'s geometry so the layout does not shift on load. */
+/** Matches `ProductCard` geometry so the layout does not shift. */
 export function ProductCardSkeleton() {
   return (
     <div className="surface-card overflow-hidden">

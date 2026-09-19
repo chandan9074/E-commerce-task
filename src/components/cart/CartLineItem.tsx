@@ -21,12 +21,8 @@ interface CartLineItemProps {
 }
 
 /**
- * One cart line.
- *
- * `memo` + the stable `useCallback` handlers from `useCart` mean editing line 3
- * re-renders line 3 only - the other lines bail out on reference equality.
- * The handlers take the id rather than closing over it so the parent can hand
- * every row the same function instances.
+ * Handlers take the id rather than closing over it, so every row gets the same
+ * function instances and `memo` can skip the rows that did not change.
  */
 export const CartLineItem = memo(function CartLineItem({
   item,

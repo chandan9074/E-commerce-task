@@ -9,13 +9,7 @@ import type { ProductSummary } from "@/types";
 
 const MIN_TERM_LENGTH = 2;
 
-/**
- * Header search suggestions.
- *
- * Debounce (fewer requests) + abort (no stale responses) + the transport's
- * in-flight de-duplication (no duplicate network calls when two inputs ask for
- * the same term) - the three layers that keep typing cheap.
- */
+/** Debounced product search for the header suggestions. */
 export function useProductSearch(term: string, limit = 6) {
   const debouncedTerm = useDebouncedValue(term.trim(), 280);
   const enabled = debouncedTerm.length >= MIN_TERM_LENGTH;

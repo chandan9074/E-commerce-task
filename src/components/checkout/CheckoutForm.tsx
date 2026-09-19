@@ -45,7 +45,7 @@ const DEFAULT_VALUES: CheckoutFormValues = {
   terms: false,
 };
 
-/** Counts leaf issues in React Hook Form's nested error object. */
+/** Counts leaf issues in a nested React Hook Form error object. */
 function countIssues(node: unknown): number {
   if (!node || typeof node !== "object") return 0;
   if ("message" in (node as object) && typeof (node as { message?: unknown }).message === "string") return 1;
@@ -56,13 +56,8 @@ function countIssues(node: unknown): number {
 }
 
 /**
- * Checkout form.
- *
- * React Hook Form keeps the fields uncontrolled (typing re-renders nothing but
- * the field itself) and Zod owns every rule through `zodResolver`, so the
- * client and the `/api/orders` handler validate against the same schema.
- * Conditional sections are driven by `useWatch` on the two fields that matter,
- * not by mirroring form state into `useState`.
+ * Fields stay uncontrolled and Zod owns every rule, so the form and the
+ * `/api/orders` handler validate against the same schema.
  */
 export function CheckoutForm() {
   const router = useRouter();
@@ -81,8 +76,8 @@ export function CheckoutForm() {
     mode: "onTouched",
   });
 
-  // `useWatch` subscribes to just these two fields, so a keystroke in any other
-  // input does not re-render the form shell.
+  // Subscribes to these two fields only, so typing elsewhere does not
+  // re-render the form shell.
   const paymentMethod = useWatch({ control, name: "paymentMethod" });
   const billingSame = useWatch({ control, name: "billingSameAsShipping" });
 
@@ -94,12 +89,11 @@ export function CheckoutForm() {
         const payload = orderService.buildPayload(values, items, totals);
         const confirmation = await orderService.create(payload);
 
-        // Hand the confirmation to the success page without putting order
-        // details in the URL; sessionStorage is scoped to this tab.
+        // Passed to the success page without exposing it in the URL.
         try {
           window.sessionStorage.setItem(ORDER_STORAGE_KEY, JSON.stringify(confirmation));
         } catch {
-          // Non-fatal: the success page falls back to a generic confirmation.
+          // The success page falls back to a generic confirmation.
         }
 
         clear();
@@ -107,7 +101,7 @@ export function CheckoutForm() {
       } catch (caught) {
         const error = ApiError.from(caught);
 
-        // Map server-side field errors back onto the form where possible.
+        // Map server-side field errors back onto the form.
         if (error.code === "VALIDATION_ERROR" && Array.isArray(error.details)) {
           for (const issue of error.details as { path?: string; message?: string }[]) {
             if (issue.path && issue.message) {
@@ -123,14 +117,8 @@ export function CheckoutForm() {
   );
 
   /**
-   * Invalid submits must never be silent.
-   *
-   * React Hook Form blocks submission when the schema fails, and if the
-   * offending field happens to be hidden (a collapsed section) or has no
-   * inline message, the button would look like it did nothing. This turns any
-   * blocked submit into a visible, counted explanation. React Hook Form's
-   * `shouldFocusError` already moves focus to the first offending field, which
-   * scrolls it into view, so this only has to explain *why* nothing happened.
+   * A blocked submit must never look like a dead button, so it always leaves a
+   * message - the offending field may be hidden or have no inline error.
    */
   const onInvalid = useCallback((formErrors: FieldErrors<CheckoutFormValues>) => {
     const count = countIssues(formErrors);
@@ -170,10 +158,8 @@ export function CheckoutForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit, onInvalid)} noValidate className="grid gap-8 lg:grid-cols-[1fr_380px]">
-      {/* `min-w-0`: see the note in CartView - without it the order summary's
-          min-content width sets the single-column track and the form overflows. */}
       <div className="min-w-0 space-y-6">
-        {/* ---------------------------------------------------- contact -- */}
+        {/* Contact */}
         <section className={sectionClasses} aria-labelledby="contact-heading">
           <h2 id="contact-heading" className="text-base font-semibold">
             1. Contact details
@@ -210,7 +196,7 @@ export function CheckoutForm() {
           </div>
         </section>
 
-        {/* --------------------------------------------------- shipping -- */}
+        {/* Shipping */}
         <section className={sectionClasses} aria-labelledby="shipping-heading">
           <h2 id="shipping-heading" className="text-base font-semibold">
             2. Shipping address
@@ -312,7 +298,7 @@ export function CheckoutForm() {
           <Checkbox label="Billing address is the same as shipping" {...register("billingSameAsShipping")} />
         </section>
 
-        {/* ---------------------------------------------------- billing -- */}
+        {/* Billing */}
         {!billingSame && (
           <section className={sectionClasses} aria-labelledby="billing-heading">
             <h2 id="billing-heading" className="text-base font-semibold">
@@ -370,7 +356,7 @@ export function CheckoutForm() {
           </section>
         )}
 
-        {/* ---------------------------------------------------- payment -- */}
+        {/* Payment */}
         <section className={sectionClasses} aria-labelledby="payment-heading">
           <h2 id="payment-heading" className="text-base font-semibold">
             3. Payment
@@ -480,7 +466,7 @@ export function CheckoutForm() {
           )}
         </section>
 
-        {/* ----------------------------------------------------- review -- */}
+        {/* Review */}
         <section className={sectionClasses} aria-labelledby="review-heading">
           <h2 id="review-heading" className="text-base font-semibold">
             4. Review

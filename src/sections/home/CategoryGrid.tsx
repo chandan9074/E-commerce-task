@@ -5,7 +5,7 @@ import { TbArrowRight } from "react-icons/tb";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import type { Category } from "@/types";
 
-/** Category tiles. Each is a plain link into a pre-filtered listing URL. */
+/** Tiles linking into a pre-filtered listing. */
 export function CategoryGrid({ categories }: { categories: Category[] }) {
   return (
     <section className="container-page space-y-6 py-16">
@@ -16,9 +16,7 @@ export function CategoryGrid({ categories }: { categories: Category[] }) {
         action={{ label: "All products", href: "/products" }}
       />
 
-      {/* Uniform tiles: the previous 2x2 feature tile left two dead cells at the
-          end of the grid on large screens. An eighth "all products" tile keeps
-          the 2- and 4-column layouts perfectly filled. */}
+      {/* The eighth tile keeps the 2- and 4-column layouts evenly filled. */}
       <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
         {categories.map((category) => (
           <Link

@@ -8,7 +8,7 @@ export interface CartState {
   items: CartItem[];
   /** False until localStorage has been read on the client. */
   hydrated: boolean;
-  /** Product id of the most recent add - drives the "added" toast/highlight. */
+  /** Product id of the most recent add. */
   lastAddedId: string | null;
 }
 
@@ -18,13 +18,7 @@ const initialState: CartState = {
   lastAddedId: null,
 };
 
-/**
- * Cart slice.
- *
- * All quantity changes clamp against stock and the per-line maximum inside the
- * reducer, so no caller can put the cart into an invalid state - the UI does
- * not have to remember the rules.
- */
+/** Quantities are clamped against stock and the per-line maximum here. */
 const cartSlice = createSlice({
   name: "cart",
   initialState,
@@ -43,7 +37,7 @@ const cartSlice = createSlice({
 
         if (existing) {
           existing.quantity = clampQuantity(existing.quantity + quantity, product.stock);
-          // Refresh the snapshot so a persisted cart picks up price/stock changes.
+          // Refresh the snapshot in case price or stock changed.
           existing.price = product.price;
           existing.compareAtPrice = product.compareAtPrice;
           existing.stock = product.stock;
@@ -66,7 +60,7 @@ const cartSlice = createSlice({
 
         state.lastAddedId = product.id;
       },
-      // `addedAt` is generated here so reducers stay pure and replayable.
+      // Generated in `prepare` so the reducer stays pure.
       prepare(product: CartLineInput, quantity = 1) {
         return { payload: { product, quantity, addedAt: Date.now() } };
       },

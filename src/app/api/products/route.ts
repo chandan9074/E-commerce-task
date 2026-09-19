@@ -4,10 +4,8 @@ import { parseProductQuery } from "@/helpers/product-query.helpers";
 
 /**
  * GET /api/products
- *
- * Query params: q, category[], brand[], minPrice, maxPrice, rating, inStock,
- * onSale, sort, page, limit. Parsed by the shared parser, so the contract is
- * identical to the one the URL bar uses.
+ * q, category[], brand[], minPrice, maxPrice, rating, inStock, onSale, sort,
+ * page, limit - parsed by the same parser the listing page uses.
  */
 export const GET = createRouteHandler(async (request) => {
   await simulateLatency();

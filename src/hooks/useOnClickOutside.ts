@@ -3,11 +3,8 @@
 import { useEffect, useRef, type RefObject } from "react";
 
 /**
- * Calls `handler` on a pointer press outside `ref`, or on Escape.
- *
- * The handler is kept in a ref (written from an effect, never during render)
- * so passing an inline arrow does not tear down and re-attach the document
- * listeners on every render.
+ * Calls `handler` on a pointer press outside `ref`, or on Escape. The handler
+ * is kept in a ref so an inline arrow does not re-attach the listeners.
  */
 export function useOnClickOutside<T extends HTMLElement>(
   ref: RefObject<T | null>,

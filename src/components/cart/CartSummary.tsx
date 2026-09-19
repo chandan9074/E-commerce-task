@@ -7,11 +7,7 @@ import { formatCurrency } from "@/lib/utils/format";
 import { cn } from "@/lib/utils/cn";
 import type { CartTotals } from "@/types";
 
-/**
- * Totals panel. Takes `totals` as a prop rather than reading the store, so the
- * cart page, the drawer and checkout all render identical numbers from the one
- * memoised selector computed by the parent.
- */
+/** Totals are passed in, so every surface renders the same numbers. */
 export function CartSummary({
   totals,
   className,

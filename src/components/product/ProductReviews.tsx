@@ -6,7 +6,7 @@ import { getRatingBreakdown } from "@/helpers/product.helpers";
 import { formatRelativeDate } from "@/lib/utils/format";
 import type { Review } from "@/types";
 
-/** Reviews are static per product, so the whole block renders on the server. */
+/** Static per product, so the whole block renders on the server. */
 export function ProductReviews({
   reviews,
   rating,

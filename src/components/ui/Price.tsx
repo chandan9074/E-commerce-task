@@ -8,7 +8,7 @@ const SIZES = {
   xl: "text-3xl",
 } as const;
 
-/** Current price with optional struck-through original and a saving chip. */
+/** Price, with the original struck through when discounted. */
 export function Price({
   value,
   compareAt,

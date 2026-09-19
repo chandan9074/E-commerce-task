@@ -8,13 +8,7 @@ import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 import { useHydrated } from "@/hooks/useHydrated";
 import { cn } from "@/lib/utils/cn";
 
-/**
- * Centred dialog (product quick view).
- *
- * Unmounts entirely when closed - unlike the drawer it has no slide-out
- * transition to wait for, and keeping a fetched product mounted would hold on
- * to data the user has dismissed.
- */
+/** Centred dialog. Unmounts when closed - there is no exit transition. */
 export function Modal({
   open,
   onClose,
@@ -45,8 +39,7 @@ export function Modal({
 
   if (!open || !hydrated) return null;
 
-  // Portalled to `document.body` so no transformed or blurred ancestor can
-  // become the containing block for this fixed overlay - see Drawer.
+  // Portalled to the body for the same reason as Drawer.
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-end justify-center p-0 sm:items-center sm:p-6">
       <div className="absolute inset-0 bg-[var(--overlay)] backdrop-blur-[2px]" onClick={onClose} />

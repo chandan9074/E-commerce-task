@@ -1,11 +1,6 @@
 import type { ApiErrorCode, NormalisedError } from "@/types";
 
-/**
- * The one error shape the whole app understands.
- *
- * Route handlers throw it, the axios interceptor converts transport failures
- * into it, and error UI reads it. Components never see an `AxiosError`.
- */
+/** The single error shape used across route handlers, services and UI. */
 export class ApiError extends Error implements NormalisedError {
   readonly code: ApiErrorCode;
   readonly status: number;
@@ -25,7 +20,7 @@ export class ApiError extends Error implements NormalisedError {
     this.aborted = options.aborted ?? code === "ABORTED";
   }
 
-  /** Retrying a 404 or a validation failure just repeats the same answer. */
+  /** A 404 or validation failure would return the same answer on retry. */
   get retryable() {
     return !this.aborted && (this.status >= 500 || this.code === "NETWORK_ERROR" || this.code === "TIMEOUT");
   }
@@ -70,7 +65,7 @@ function statusForCode(code: ApiErrorCode): number {
   }
 }
 
-/** Copy shown to users - deliberately free of stack traces and jargon. */
+/** User-facing copy for an error. */
 export function friendlyMessage(error: NormalisedError | null | undefined) {
   if (!error) return "Something went wrong.";
   switch (error.code) {

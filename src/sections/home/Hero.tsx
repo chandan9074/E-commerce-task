@@ -5,10 +5,7 @@ import { TbArrowRight, TbSparkles } from "react-icons/tb";
 import { buttonClasses } from "@/components/ui/Button";
 import type { ProductSummary } from "@/types";
 
-/**
- * Landing hero. Entirely server-rendered - the only "interactivity" is links,
- * and the feature image is marked `priority` because it is the LCP element.
- */
+/** The feature image is `priority` because it is the LCP element. */
 export function Hero({
   featured,
   stats,
@@ -28,10 +25,8 @@ export function Hero({
       />
 
       <div className="container-page relative py-16 lg:py-24">
-        {/* `min-w-0` on both columns: without it a grid track refuses to shrink
-            below its content's min-content width, and the stats row below was
-            forcing the whole column to 428px on a 375px screen - clipping the
-            headline and the paragraph against the section's `overflow-hidden`. */}
+        {/* `min-w-0`: grid tracks will not shrink below their min-content
+            width, and the stats row would otherwise widen the whole column. */}
         <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_1fr]">
           <div className="min-w-0">
             <span className="inline-flex items-center gap-1.5 rounded-pill bg-brand-600/10 px-3 py-1.5 text-xs font-semibold text-brand-700 dark:text-brand-300">
@@ -78,8 +73,7 @@ export function Hero({
 
           <div className="relative min-w-0">
             <div className="surface-card relative mx-auto max-w-md overflow-hidden p-3 shadow-card lg:max-w-none">
-              {/* Catalogue imagery is square, so a square frame fills it edge to
-                  edge with nothing cropped away. */}
+              {/* Square frame for square source imagery, so nothing is cropped. */}
               <div className="relative aspect-square overflow-hidden rounded-xl bg-surface-muted">
                 <Image
                   src={featured.thumbnail}

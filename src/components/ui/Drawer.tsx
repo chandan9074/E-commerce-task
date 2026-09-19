@@ -18,13 +18,7 @@ interface DrawerProps {
   className?: string;
 }
 
-/**
- * Slide-over panel used for the cart and the mobile filter sheet.
- *
- * Handles the three things an overlay must get right: background scroll lock,
- * Escape to close, and moving focus into the panel on open (with every listener
- * removed on close).
- */
+/** Slide-over panel used for the cart and the mobile filter sheet. */
 export function Drawer({ open, onClose, title, side = "right", children, footer, className }: DrawerProps) {
   const panelRef = useRef<HTMLDivElement>(null);
   const hydrated = useHydrated();
@@ -44,14 +38,9 @@ export function Drawer({ open, onClose, title, side = "right", children, footer,
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [open, onClose]);
 
-  /**
-   * Stays mounted when closed so the slide transition can run, but:
-   *   - `overflow-hidden` clips the off-canvas panel. Without it the panel,
-   *     translated 100% past the right edge, extends the document's scroll
-   *     width and the page scrolls sideways on mobile with the panel visible.
-   *   - `inert` takes the closed panel out of the tab order and the
-   *     accessibility tree, which `pointer-events-none` alone does not do.
-   */
+  // Stays mounted when closed so the transition can run. `overflow-hidden`
+  // clips the off-canvas panel, which would otherwise widen the document;
+  // `inert` keeps it out of the tab order and the accessibility tree.
   const overlay = (
     <div className={cn("fixed inset-0 z-50 overflow-hidden", !open && "pointer-events-none")} inert={!open}>
       <div
@@ -94,15 +83,8 @@ export function Drawer({ open, onClose, title, side = "right", children, footer,
     </div>
   );
 
-  /**
-   * Rendered into `document.body` rather than in place.
-   *
-   * `position: fixed` resolves against the viewport only while no ancestor
-   * creates a containing block - and the site header does exactly that with
-   * `backdrop-blur`. Left in the header, the mobile navigation drawer was
-   * clamped to the header's own 118px height instead of filling the screen.
-   * A portal makes the drawer independent of wherever it is triggered from.
-   */
+  // Portalled to the body: a `backdrop-filter` ancestor (the header) becomes
+  // the containing block for fixed positioning and would trap the panel.
   if (!hydrated) return null;
   return createPortal(overlay, document.body);
 }

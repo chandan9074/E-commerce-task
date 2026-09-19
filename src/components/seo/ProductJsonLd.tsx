@@ -1,12 +1,7 @@
 import { SITE } from "@/lib/constants";
 import type { Product } from "@/types";
 
-/**
- * schema.org Product markup.
- *
- * Rendered on the server as a plain script tag - this is what lets a listing
- * show price, availability and star ratings directly in search results.
- */
+/** schema.org Product markup, so price and rating can appear in results. */
 export function ProductJsonLd({ product }: { product: Product }) {
   const url = `${SITE.url}/products/${product.slug}`;
 

@@ -18,24 +18,17 @@ export interface ApiResource<T> {
 interface Options<T> {
   enabled?: boolean;
   initialData?: T | null;
-  /** Keep showing the previous result while a new one loads (no flicker). */
+  /** Keep the previous result visible while a new one loads. */
   keepPreviousData?: boolean;
 }
 
 /**
- * Generic data hook for the service layer.
+ * Data hook for the service layer: status, abort on unmount or key change,
+ * and a stable `refetch`.
  *
- * Owns the four things every client fetch needs and nothing else:
- *   - loading / error / empty status
- *   - an `AbortController` per request, cancelled on unmount or key change
- *   - a guard so a slow earlier response can never overwrite a newer one
- *   - a stable `refetch` for error-state retry buttons
- *
- * Status is *derived*, not stored: a result carries the key it was fetched
- * for, so "is this still loading?" is a comparison during render rather than a
- * second state update inside the effect. The fetcher is held in a ref (written
- * in an effect, never during render) so passing an inline arrow does not
- * retrigger the request.
+ * Status is derived rather than stored - a result carries the key it was
+ * fetched for - so a stale response cannot overwrite a newer one. The fetcher
+ * lives in a ref so an inline arrow does not retrigger the request.
  */
 export function useApiResource<T>(
   fetcher: (options: { signal: AbortSignal }) => Promise<T>,
@@ -52,8 +45,7 @@ export function useApiResource<T>(
   });
 
   const fetcherRef = useRef(fetcher);
-  // Declared before the fetch effect so the latest fetcher is in place by the
-  // time that effect runs in the same commit.
+  // Declared before the fetch effect so it runs first in the same commit.
   useEffect(() => {
     fetcherRef.current = fetcher;
   });
@@ -71,7 +63,7 @@ export function useApiResource<T>(
       })
       .catch((caught: unknown) => {
         const apiError = ApiError.from(caught);
-        // An abort is the expected outcome of navigating away - not an error.
+        // Aborts are expected when navigating away.
         if (apiError.aborted || controller.signal.aborted) return;
         setResult({ key, data: null, error: apiError });
       });

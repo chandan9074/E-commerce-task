@@ -1,9 +1,4 @@
-/**
- * Formatting helpers.
- *
- * `Intl` formatters are expensive to construct, so they are cached per locale
- * and currency - these run on every product card, in tight loops.
- */
+// Intl formatters are expensive to construct, so they are cached.
 
 const currencyFormatters = new Map<string, Intl.NumberFormat>();
 
@@ -35,7 +30,7 @@ export function formatDate(iso: string) {
   return Number.isNaN(parsed) ? "" : dateFormatter.format(parsed);
 }
 
-/** "3 days ago" style label used on reviews. */
+/** Relative date label, e.g. "3 days ago". */
 export function formatRelativeDate(iso: string, now = Date.now()) {
   const parsed = Date.parse(iso);
   if (Number.isNaN(parsed)) return "";

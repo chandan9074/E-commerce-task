@@ -1,8 +1,6 @@
 /**
- * Deterministic mock-catalogue generator.
- *
- * Produces `src/lib/data/products.json` (500+ products with reviews) from a
- * fixed seed so the dataset is identical across machines, rebuilds and diffs.
+ * Generates `src/lib/data/products.json` from a fixed seed, so the dataset is
+ * identical on every machine.
  *
  *   npm run data:generate
  */
@@ -14,7 +12,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUT = resolve(__dirname, "../src/lib/data/products.json");
 const TARGET_COUNT = 520;
 
-/* ------------------------------------------------------------------ rng -- */
+// --- rng
 function mulberry32(a) {
   return function rng() {
     a |= 0;
@@ -36,7 +34,7 @@ const int = (min, max) => Math.floor(rand() * (max - min + 1)) + min;
 const float = (min, max, dp = 1) => Number((rand() * (max - min) + min).toFixed(dp));
 const chance = (p) => rand() < p;
 
-/* ------------------------------------------------------------- taxonomy -- */
+// --- taxonomy
 const CATALOGUE = [
   {
     slug: "electronics",
@@ -176,7 +174,7 @@ const REVIEW_BODIES_LO = [
 const FIRST_NAMES = ["Ayesha", "Marcus", "Priya", "Tom", "Lena", "Chandan", "Sofia", "Daniel", "Noor", "Elliot", "Mei", "Jonas", "Rina", "Oscar", "Farah", "Isaac", "Yuki", "Grace", "Hassan", "Clara", "Dmitri", "Anika", "Leo", "Maya"];
 const LAST_INITIALS = ["A.", "B.", "C.", "D.", "H.", "K.", "M.", "N.", "P.", "R.", "S.", "T.", "V.", "W."];
 
-/* ------------------------------------------------------------- helpers -- */
+// --- helpers
 const slugify = (s) =>
   s
     .toLowerCase()
@@ -251,7 +249,7 @@ function buildReviews(productId, rating, count) {
   const sample = Math.min(count, int(0, 7));
   const reviews = [];
   for (let i = 0; i < sample; i += 1) {
-    // Individual scores cluster around the product's aggregate rating.
+    // Cluster individual scores around the aggregate rating.
     const drift = float(-1.4, 1.1, 1);
     const score = Math.min(5, Math.max(1, Math.round(rating + drift)));
     const [titles, bodies] =
@@ -274,7 +272,7 @@ function buildReviews(productId, rating, count) {
   return reviews.sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt));
 }
 
-/* ------------------------------------------------------------ generate -- */
+// --- generate
 const products = [];
 const usedSlugs = new Set();
 let n = 0;

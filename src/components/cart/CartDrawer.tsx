@@ -13,7 +13,7 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { cartDrawerClosed } from "@/store/slices/ui.slice";
 import { Drawer } from "@/components/ui/Drawer";
 
-/** Slide-over cart, mounted once in the layout and opened from anywhere. */
+/** Mounted once in the layout, opened from anywhere. */
 export function CartDrawer() {
   const open = useAppSelector((state) => state.ui.cartDrawerOpen);
   const dispatch = useAppDispatch();

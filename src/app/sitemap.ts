@@ -3,11 +3,7 @@ import type { MetadataRoute } from "next";
 import { productRepository } from "@/lib/data/product.repository";
 import { SITE } from "@/lib/constants";
 
-/**
- * Sitemap covering the static routes, every category listing and all 500+
- * product pages - generated from the repository so it can never drift from the
- * catalogue.
- */
+/** Static routes, category listings and every product page. */
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
 

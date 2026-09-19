@@ -7,14 +7,8 @@ import { DEFAULT_QUERY } from "@/helpers/product-query.helpers";
 import type { Category, Product, ProductListResult, ProductQuery, ProductSummary } from "@/types";
 
 /**
- * Data-access layer. The only module that touches the catalogue directly.
- *
- * Both consumers go through it:
- *   - Server Components call it in-process (no HTTP round-trip on first paint)
- *   - Route handlers call it to serve the public JSON API
- *
- * Swapping the JSON dataset for Postgres or a headless commerce API means
- * rewriting this file and nothing else.
+ * Data access for the catalogue. Used by Server Components directly and by the
+ * route handlers that serve the JSON API.
  */
 export const productRepository = {
   list(query: Partial<ProductQuery> = {}): ProductListResult {
@@ -23,7 +17,7 @@ export const productRepository = {
     return { ...result, appliedQuery: { ...appliedQuery, page: result.pagination.page } };
   },
 
-  /** Throws a typed 404 rather than returning null - invalid ids are errors. */
+  /** Throws a typed 404 for an unknown slug. */
   getBySlug(slug: string): Product {
     const product = catalog.getBySlug(slug);
     if (!product) throw ApiError.notFound(`No product exists with the slug "${slug}".`);
@@ -54,7 +48,6 @@ export const productRepository = {
     return catalog.priceBounds;
   },
 
-  /** Home-page rails. Sorted once here rather than in the component. */
   getFeatured(limit = 8): ProductSummary[] {
     return [...catalog.products]
       .filter((p) => p.featured && p.stock > 0)
@@ -86,7 +79,7 @@ export const productRepository = {
       .map(toSummary);
   },
 
-  /** Used by `generateStaticParams` and the sitemap. */
+  /** For `generateStaticParams` and the sitemap. */
   getAllSlugs(): string[] {
     return catalog.products.map((p) => p.slug);
   },

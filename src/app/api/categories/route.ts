@@ -1,7 +1,7 @@
 import { CACHE, createRouteHandler, simulateLatency } from "@/lib/api/route-handler";
 import { productRepository } from "@/lib/data/product.repository";
 
-/** GET /api/categories - taxonomy plus the facet inputs the filter panel needs. */
+/** GET /api/categories - taxonomy, brands and price bounds. */
 export const GET = createRouteHandler(async () => {
   await simulateLatency(40, 120);
 

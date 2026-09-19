@@ -7,10 +7,7 @@ import { productRepository } from "@/lib/data/product.repository";
 import { ProductRail } from "@/components/product/ProductRail";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
-/**
- * Rendered (with a real 404 status) when `notFound()` is called for an unknown
- * slug. Offers a way forward instead of a dead end.
- */
+/** Rendered with a 404 status when `notFound()` is called. */
 export default function ProductNotFound() {
   const suggestions = productRepository.getTrending(4);
 

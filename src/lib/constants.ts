@@ -1,23 +1,18 @@
 import type { SortOption } from "@/types";
 
 /**
- * Absolute origin used for canonical URLs, Open Graph tags, the sitemap and the
- * server-side axios base URL.
+ * Absolute origin for canonical URLs, Open Graph tags, the sitemap and the
+ * server-side API base URL.
  *
- * `process.env.X ?? fallback` is not enough: a variable that is *defined but
- * empty* - trivially easy to create in a hosting dashboard - is still a string,
- * so it passes `??` and then throws `ERR_INVALID_URL` inside `new URL("")`
- * while Next collects page data, failing the production build.
- *
- * Every candidate is therefore trimmed, given a scheme if it lacks one, and
- * validated. A bad value falls through to the next candidate instead of
- * breaking the build.
+ * `??` is not enough: an env var defined but empty is still a string, passes
+ * the fallback and then throws in `new URL("")`. Each candidate is trimmed and
+ * validated, and a bad one falls through to the next.
  */
 function resolveSiteUrl(): string {
   const candidates = [
     process.env.NEXT_PUBLIC_SITE_URL,
-    // Vercel exposes these automatically. The stable production domain is
-    // preferred over the per-deployment URL so canonicals do not churn.
+    // Set automatically on Vercel. The production domain comes first so
+    // canonicals do not change per deployment.
     process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL,
     process.env.VERCEL_PROJECT_PRODUCTION_URL,
     process.env.NEXT_PUBLIC_VERCEL_URL,
@@ -30,11 +25,10 @@ function resolveSiteUrl(): string {
 
     try {
       const parsed = new URL(/^https?:\/\//i.test(value) ? value : `https://${value}`);
-      // A hostname with no dot ("htp://site.com" mis-typed, say) would parse but
-      // produce a nonsense origin, so reject it and let the next candidate win.
+      // A hostname with no dot means a mis-typed scheme; skip it.
       if (parsed.hostname === "localhost" || parsed.hostname.includes(".")) return parsed.origin;
     } catch {
-      // Malformed - try the next candidate.
+      // Malformed; try the next candidate.
     }
   }
 
@@ -51,7 +45,7 @@ export const SITE = {
   currency: "USD",
 } as const;
 
-/** Commerce rules kept in one place so cart, checkout and UI never disagree. */
+/** Commerce rules, shared by the cart, checkout and UI. */
 export const COMMERCE = {
   freeShippingThreshold: 75,
   flatShippingRate: 6.95,
@@ -66,10 +60,10 @@ export const PAGINATION = {
 } as const;
 
 export const CART_STORAGE_KEY = "aurelia.cart.v1";
-/** Hands the order confirmation to the success page without exposing it in the URL. */
+/** Passes the order confirmation to the success page. */
 export const ORDER_STORAGE_KEY = "aurelia.last-order";
 
-/** Canonical search-param names. Imported everywhere instead of raw strings. */
+/** Search-param names, so no component hard-codes one. */
 export const QUERY_KEYS = {
   search: "q",
   category: "category",

@@ -9,7 +9,7 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { mobileFiltersToggled } from "@/store/slices/ui.slice";
 import type { ProductFacets } from "@/types";
 
-/** The same `FilterPanel`, presented as a sheet below the `lg` breakpoint. */
+/** The same `FilterPanel`, as a sheet below the `lg` breakpoint. */
 export function MobileFilterDrawer({ facets }: { facets: ProductFacets }) {
   const open = useAppSelector((state) => state.ui.mobileFiltersOpen);
   const dispatch = useAppDispatch();

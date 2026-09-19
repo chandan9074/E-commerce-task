@@ -14,12 +14,8 @@ import type { CartItem } from "@/types";
 import type { RootState } from "@/store";
 
 /**
- * Cart persistence.
- *
- * Implemented as a listener middleware rather than a `useEffect` in a
- * component: persistence is a side effect of *state changing*, not of anything
- * rendering, so tying it to the store means it works no matter which component
- * dispatched - and never re-runs because a parent re-rendered.
+ * Saves the cart to localStorage on every mutation. A listener middleware
+ * rather than a component effect, so it runs on state change, not on render.
  */
 export const cartPersistenceMiddleware = createListenerMiddleware();
 
@@ -29,7 +25,7 @@ cartPersistenceMiddleware.startListening({
     if (typeof window === "undefined") return;
 
     const { cart } = api.getState() as RootState;
-    // Do not write before hydration, or an empty initial state would wipe a saved cart.
+    // Writing before hydration would overwrite the saved cart with an empty one.
     if (!cart.hydrated) return;
 
     try {
@@ -38,7 +34,7 @@ cartPersistenceMiddleware.startListening({
         JSON.stringify({ version: 1, savedAt: Date.now(), items: cart.items }),
       );
     } catch {
-      // Private mode / quota exceeded - the cart still works for this session.
+      // Private mode or quota exceeded.
     }
   },
 });
@@ -49,7 +45,7 @@ interface PersistedCart {
   items: CartItem[];
 }
 
-/** Reads and validates the saved cart. Bad data is discarded, never thrown. */
+/** Reads the saved cart, discarding anything malformed. */
 export function readPersistedCart(): CartItem[] {
   if (typeof window === "undefined") return [];
 

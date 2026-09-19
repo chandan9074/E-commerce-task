@@ -11,11 +11,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: true },
 };
 
-/**
- * The page shell stays a Server Component: heading, recommendations and
- * metadata are server-rendered, and only `CartView` (which needs the store)
- * runs on the client.
- */
+/** Only `CartView` needs the store; the rest of the page is server-rendered. */
 export default function CartPage() {
   const recommendations = productRepository.getDeals(4);
 

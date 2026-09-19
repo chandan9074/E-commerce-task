@@ -1,5 +1,3 @@
-/** Transport-level contracts shared by route handlers, axios and services. */
-
 export interface ApiMeta {
   requestId: string;
   durationMs: number;
@@ -34,13 +32,13 @@ export type ApiErrorCode =
   | "ABORTED"
   | "SERVER_ERROR";
 
-/** Everything the UI needs to render an error state, and nothing more. */
+/** What the UI needs to render an error state. */
 export interface NormalisedError {
   code: ApiErrorCode;
   message: string;
   status: number;
   details?: unknown;
-  /** True when the failure came from an aborted request, not a real problem. */
+  /** True when the request was aborted rather than failing. */
   aborted: boolean;
   retryable: boolean;
 }

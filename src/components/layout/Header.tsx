@@ -9,11 +9,8 @@ import { productRepository } from "@/lib/data/product.repository";
 import { SITE } from "@/lib/constants";
 
 /**
- * Site header - a **Server Component**.
- *
- * It reads the category list straight from the repository at render time (no
- * fetch, no loading state) and mounts only three client islands: search, cart
- * button and theme toggle.
+ * Reads the category list from the repository at render time. Only search,
+ * the cart button and the theme toggle run on the client.
  */
 export function Header() {
   const categories = productRepository.getCategories();
@@ -39,7 +36,7 @@ export function Header() {
           </div>
         </div>
 
-        {/* Category bar: plain links, so each one is crawlable and prefetchable. */}
+        {/* Plain links, so each is crawlable and prefetchable. */}
         <nav aria-label="Categories" className="hidden lg:block">
           <ul className="-mb-px flex items-center gap-1 overflow-x-auto pb-2 text-sm scrollbar-none">
             <li>

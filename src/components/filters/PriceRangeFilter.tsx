@@ -20,11 +20,9 @@ const QUICK_RANGES = [
 ];
 
 /**
- * Price inputs are a *controlled draft* of URL state: typing must not fire a
- * navigation per keystroke, so the draft lives in local state and is committed
- * on submit. The effect exists purely to re-sync the draft when the URL changes
- * from somewhere else (a chip removed, "clear all", back button) - the
- * legitimate "external source of truth changed" use of `useEffect`.
+ * The inputs are a local draft committed on submit, so typing does not fire a
+ * navigation per keystroke. The effect re-syncs the draft when the URL changes
+ * elsewhere - a chip removed, clear all, or the back button.
  */
 export const PriceRangeFilter = memo(function PriceRangeFilter({
   min,

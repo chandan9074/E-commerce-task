@@ -4,10 +4,7 @@ import { cartPersistenceMiddleware } from "./middleware/cart-persistence";
 import { cartReducer } from "./slices/cart.slice";
 import { uiReducer } from "./slices/ui.slice";
 
-/**
- * A factory, not a module-level singleton: on the server a shared store would
- * leak one visitor's cart into another visitor's render.
- */
+/** A factory, not a singleton - a shared store would leak carts on the server. */
 export function makeStore() {
   return configureStore({
     reducer: {

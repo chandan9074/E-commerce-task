@@ -12,13 +12,7 @@ import { COMMERCE } from "@/lib/constants";
 import { formatCurrency } from "@/lib/utils/format";
 import type { CartLineInput } from "@/types";
 
-/**
- * Quantity + buy actions on the product page.
- *
- * The smallest possible client island: everything else on the page (gallery
- * aside) is server-rendered. Quantity is local state - it is a draft until the
- * user commits it to the cart.
- */
+/** Quantity and buy actions. Quantity is a draft until it reaches the cart. */
 export function ProductPurchasePanel({ product }: { product: CartLineInput }) {
   const router = useRouter();
   const { addItem } = useCart();

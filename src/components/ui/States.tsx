@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils/cn";
 import { friendlyMessage } from "@/lib/api/http-error";
 import type { NormalisedError } from "@/types";
 
-/** Empty result set - always offers a way back to a non-empty state. */
+/** Empty result set, with an action back to a non-empty state. */
 export function EmptyState({
   title = "Nothing here yet",
   description,
@@ -37,7 +37,7 @@ export function EmptyState({
   );
 }
 
-/** Error surface used by `error.tsx` boundaries and failed client fetches. */
+/** Used by `error.tsx` boundaries and failed client fetches. */
 export function ErrorState({
   error,
   title = "Something went wrong",

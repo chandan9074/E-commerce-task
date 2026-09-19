@@ -1,9 +1,6 @@
 import type { ProductSummary } from "./product";
 
-/**
- * Cart lines store a snapshot of the product rather than a reference, so a
- * persisted cart still renders after a refresh without re-fetching anything.
- */
+/** A snapshot rather than a reference, so a saved cart renders with no fetch. */
 export interface CartItem {
   id: string;
   slug: string;

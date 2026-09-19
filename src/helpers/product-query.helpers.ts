@@ -1,15 +1,8 @@
 import { PAGINATION, QUERY_KEYS } from "@/lib/constants";
 import { SORT_OPTIONS, type ProductQuery, type SortOption } from "@/types";
 
-/**
- * The single source of truth for translating URL search params <-> a typed
- * query object.
- *
- * Both sides of the app depend on it: Server Components parse `searchParams`
- * with it, the client filter hook writes URLs with it, and the route handlers
- * parse the incoming request with it. One parser means the server and the
- * client can never disagree about what `?rating=4&page=2` means.
- */
+// Translates URL search params to a typed query and back. Used by the
+// listing page, the client filter hook and the route handlers.
 
 export type SearchParamsInput =
   | URLSearchParams
@@ -66,7 +59,7 @@ export function parseProductQuery(input: SearchParamsInput): ProductQuery {
   const minPrice = toNumber(readOne(input, QUERY_KEYS.minPrice), { min: 0, max: 100_000 });
   const maxPrice = toNumber(readOne(input, QUERY_KEYS.maxPrice), { min: 0, max: 100_000 });
 
-  // A reversed range is a user slip, not an error - swap rather than return zero results.
+  // Swap a reversed range rather than returning nothing.
   const [lo, hi] =
     minPrice !== null && maxPrice !== null && minPrice > maxPrice ? [maxPrice, minPrice] : [minPrice, maxPrice];
 
@@ -89,9 +82,8 @@ export function parseProductQuery(input: SearchParamsInput): ProductQuery {
 }
 
 /**
- * Serialises back to search params, omitting defaults so shared URLs stay
- * short and two identical queries always produce the same string (which is
- * what lets the client cache/de-duplicate requests by key).
+ * Serialises to search params, omitting defaults. Identical queries always
+ * produce the same string, so it can be used as a cache key.
  */
 export function buildSearchParams(query: Partial<ProductQuery>): URLSearchParams {
   const merged = { ...DEFAULT_QUERY, ...query };
@@ -117,7 +109,7 @@ export function buildProductsHref(query: Partial<ProductQuery>, pathname = "/pro
   return qs ? `${pathname}?${qs}` : pathname;
 }
 
-/** Stable cache key for a query - identical filters always map to one string. */
+/** Stable cache key for a query. */
 export function queryCacheKey(query: Partial<ProductQuery>) {
   return buildSearchParams(query).toString();
 }

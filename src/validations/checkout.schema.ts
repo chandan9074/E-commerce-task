@@ -1,12 +1,6 @@
 import { z } from "zod";
 
-/**
- * Checkout validation.
- *
- * One schema, two consumers: React Hook Form validates the form with it on the
- * client, and the `/api/orders` route validates the submitted payload with the
- * order schema below. Client-side rules are never the only line of defence.
- */
+// Shared by the checkout form and the /api/orders handler.
 
 const COUNTRIES = ["US", "GB", "CA", "AU", "DE", "FR", "NL", "BD", "IN", "AE"] as const;
 export const PAYMENT_METHODS = ["card", "paypal", "cod"] as const;
@@ -25,7 +19,7 @@ export const COUNTRY_OPTIONS: { value: (typeof COUNTRIES)[number]; label: string
   { value: "AE", label: "United Arab Emirates" },
 ];
 
-/** Standard Luhn check - catches mistyped card numbers before submission. */
+/** Luhn check, to catch mistyped card numbers. */
 export function isLuhnValid(value: string) {
   const digits = value.replace(/\D/g, "");
   if (digits.length < 13) return false;
@@ -65,14 +59,12 @@ const addressSchema = z.object({
 export type AddressValues = z.infer<typeof addressSchema>;
 
 /**
- * Billing is a *draft* at the field level - every key optional, no length or
- * format rules. The real address rules are applied in `superRefine` below, and
- * only when the billing address is actually in use.
+ * Billing is unconstrained at the field level; the real rules are applied in
+ * `superRefine` only when a separate billing address is in use.
  *
- * `addressSchema.partial()` would not work here: `.partial()` makes a key
- * optional but still validates it when present, so the empty strings the form
- * initialises billing with would fail `min()` even while the billing section is
- * hidden - blocking submit with errors on fields the user cannot see.
+ * `addressSchema.partial()` cannot be used: it still validates a key when
+ * present, so the empty strings the form starts with would fail `min()` and
+ * block submit with errors on hidden fields.
  */
 const billingDraftSchema = z
   .object({
@@ -109,8 +101,7 @@ export const checkoutSchema = z
 
     notes: z.string().trim().max(400, "Keep delivery notes under 400 characters").optional().or(z.literal("")),
     marketingOptIn: z.boolean().optional(),
-    // `boolean().refine` rather than `literal(true)`: the input type stays
-    // `boolean`, so the checkbox can legitimately default to unchecked.
+    // `refine` rather than `literal(true)` so the input type stays boolean.
     terms: z.boolean().refine((value) => value === true, {
       message: "You need to accept the terms to place the order",
     }),
@@ -152,7 +143,7 @@ export const checkoutSchema = z
 export type CheckoutFormValues = z.input<typeof checkoutSchema>;
 export type CheckoutValues = z.output<typeof checkoutSchema>;
 
-/** What the client is allowed to POST to /api/orders. Raw PAN never leaves the form. */
+/** Payload accepted by POST /api/orders. The card number never leaves the form. */
 export const orderPayloadSchema = z.object({
   contact: z.object({ email: z.email(), phone: z.string().min(5) }),
   shipping: addressSchema,

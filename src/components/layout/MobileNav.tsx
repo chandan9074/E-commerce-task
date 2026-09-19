@@ -8,7 +8,7 @@ import { Drawer } from "@/components/ui/Drawer";
 import { HeaderSearch } from "./HeaderSearch";
 import type { Category } from "@/types";
 
-/** Compact navigation for small screens. Local state - nothing else needs it. */
+/** Navigation sheet for small screens. */
 export function MobileNav({ categories }: { categories: Pick<Category, "slug" | "name" | "productCount">[] }) {
   const [open, setOpen] = useState(false);
   const close = useCallback(() => setOpen(false), []);

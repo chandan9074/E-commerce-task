@@ -1,6 +1,6 @@
 import { ProductGridSkeleton, Skeleton } from "@/components/ui/Skeleton";
 
-/** Route-level loading UI, streamed while the listing renders on the server. */
+/** Shown while the listing renders on the server. */
 export default function ProductsLoading() {
   return (
     <div className="container-page py-8">

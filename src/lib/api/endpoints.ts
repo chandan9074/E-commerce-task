@@ -1,9 +1,4 @@
-/**
- * Endpoint registry.
- *
- * Every URL the client can call lives here, so renaming a route is a one-line
- * change and no component ever hard-codes a path.
- */
+/** Every API path the client can call. */
 export const endpoints = {
   products: {
     list: () => "/products",

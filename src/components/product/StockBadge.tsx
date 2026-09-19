@@ -3,7 +3,7 @@ import { TbAlertTriangle, TbCircleCheck, TbCircleX } from "react-icons/tb";
 import { Badge } from "@/components/ui/Badge";
 import { getStockStatus } from "@/helpers/product.helpers";
 
-/** Single source of truth for how stock is communicated across the app. */
+/** Stock level, shown the same way everywhere. */
 export function StockBadge({ stock, className }: { stock: number; className?: string }) {
   const status = getStockStatus(stock);
 

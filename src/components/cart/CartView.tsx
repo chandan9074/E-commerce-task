@@ -11,12 +11,8 @@ import { EmptyState } from "@/components/ui/States";
 import { useCart } from "@/hooks/useCart";
 
 /**
- * Cart page body.
- *
- * Client-side because the cart lives in the browser (Redux + localStorage).
- * Until `hydrated` flips, it renders skeletons rather than an empty cart -
- * showing "your cart is empty" for a frame to someone who has items in it is
- * the classic persisted-state hydration bug.
+ * Renders skeletons until the saved cart has loaded, so someone with items
+ * never sees an empty cart for a frame.
  */
 export function CartView() {
   const { items, totals, hydrated, increment, decrement, removeItem, clear } = useCart();
@@ -50,9 +46,8 @@ export function CartView() {
     );
   }
 
-  // `min-w-0` on both columns: a grid item defaults to `min-width: auto`, so
-  // before the `lg` breakpoint the single column was sized by the order
-  // summary's min-content width (447px) and pushed the whole page sideways.
+  // `min-w-0` on both columns: grid items default to `min-width: auto` and
+  // would otherwise be sized by the order summary's min-content width.
   return (
     <div className="grid gap-8 lg:grid-cols-[1fr_360px]">
       <section aria-label="Cart items" className="min-w-0">

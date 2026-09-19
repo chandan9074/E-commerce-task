@@ -3,14 +3,8 @@ import "server-only";
 import dataset from "./products.json";
 import type { Category, Product } from "@/types";
 
-/**
- * In-memory catalogue "repository" - the mock stand-in for a database.
- *
- * `server-only` makes it a build error to import this from a Client Component,
- * which is what keeps the 1.5 MB dataset out of the browser bundle. Indexes are
- * built once per server process (module scope) instead of per request.
- */
-
+// `server-only` keeps the dataset out of the client bundle. Indexes are
+// built once per server process, not per request.
 const products = dataset.products as Product[];
 const categories = dataset.categories as Category[];
 const brands = dataset.brands as string[];
@@ -18,10 +12,7 @@ const brands = dataset.brands as string[];
 const bySlug = new Map<string, Product>(products.map((p) => [p.slug, p]));
 const byId = new Map<string, Product>(products.map((p) => [p.id, p]));
 
-/**
- * Pre-lowercased haystack per product. Building it once turns search from
- * "lowercase 520 strings on every keystroke" into a plain substring scan.
- */
+/** Pre-lowercased search text per product, so search is a substring scan. */
 const searchIndex = new Map<string, string>(
   products.map((p) => [
     p.id,

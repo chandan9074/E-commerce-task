@@ -1,5 +1,3 @@
-/** Domain types for the catalogue. Shared by the API layer, services and UI. */
-
 export interface ProductImage {
   url: string;
   alt: string;
@@ -21,10 +19,7 @@ export interface Review {
   helpfulCount: number;
 }
 
-/**
- * The full product record as stored in the mock dataset.
- * The listing endpoint never returns this shape - see {@link ProductSummary}.
- */
+/** The full record. List endpoints return {@link ProductSummary} instead. */
 export interface Product {
   id: string;
   slug: string;
@@ -56,12 +51,7 @@ export interface Product {
   reviews: Review[];
 }
 
-/**
- * Trimmed projection used by grids and carousels.
- *
- * Listing 24 full products would ship ~7x more JSON to the client than it can
- * render, so the API projects down to exactly the fields a card paints.
- */
+/** The fields a card actually renders. */
 export type ProductSummary = Pick<
   Product,
   | "id"
@@ -109,7 +99,7 @@ export const SORT_OPTIONS = [
 
 export type SortOption = (typeof SORT_OPTIONS)[number];
 
-/** Normalised, fully-resolved query. Produced by the search-param parser. */
+/** A normalised query, produced by the search-param parser. */
 export interface ProductQuery {
   search: string;
   category: string[];
@@ -139,7 +129,7 @@ export interface FacetBucket {
   count: number;
 }
 
-/** Facets are computed against the current query so counts stay meaningful. */
+/** Counted against the current query, so the numbers stay meaningful. */
 export interface ProductFacets {
   categories: FacetBucket[];
   brands: FacetBucket[];

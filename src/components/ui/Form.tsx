@@ -5,13 +5,8 @@ import { TbAlertCircle } from "react-icons/tb";
 
 import { cn } from "@/lib/utils/cn";
 
-/**
- * Form primitives.
- *
- * `Field` owns label/description/error wiring (`id`, `aria-describedby`,
- * `aria-invalid`) so every input in checkout is accessible by construction
- * rather than by remembering.
- */
+// `Field` owns the label, hint and error wiring: id, aria-describedby
+// and aria-invalid.
 
 const controlClasses = (invalid?: boolean) =>
   cn(

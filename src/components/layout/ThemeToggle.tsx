@@ -6,12 +6,8 @@ import { TbMoon, TbSun } from "react-icons/tb";
 const STORAGE_KEY = "aurelia.theme";
 
 /**
- * Light/dark toggle.
- *
- * Deliberately stateless: the `dark` class on `<html>` is the state, applied
- * before first paint by the inline script below. Both icons are rendered and
- * CSS picks one (`dark:hidden` / `hidden dark:block`), so there is nothing to
- * hydrate, no mismatch to suppress, and no re-render on toggle.
+ * Stateless: the `dark` class on `<html>` is the state, and CSS picks which
+ * icon to show, so there is nothing to hydrate and no mismatch to suppress.
  */
 export function ThemeToggle() {
   const toggle = useCallback(() => {
@@ -20,7 +16,7 @@ export function ThemeToggle() {
     try {
       window.localStorage.setItem(STORAGE_KEY, next ? "dark" : "light");
     } catch {
-      // Storage unavailable - the choice simply will not survive a reload.
+      // Storage unavailable; the choice will not survive a reload.
     }
   }, []);
 

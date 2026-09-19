@@ -12,16 +12,9 @@ import {
 import type { ProductQuery, SortOption } from "@/types";
 
 /**
- * Filter state, stored in the URL.
- *
- * There is no `useState` mirror of the filters anywhere in the app: the URL is
- * the state, which is what makes refresh, back/forward and link-sharing work
- * for free, and lets the listing page stay a Server Component.
- *
- * Every mutator is wrapped in `useTransition` so the current results stay
- * interactive while the server renders the next page, and each is `useCallback`
- * with an empty dependency list (reading the live query from a ref) so the
- * memoised filter panels below never re-render just because the URL changed.
+ * Reads and writes the filter state in the URL - there is no `useState` copy
+ * of it. Mutations run in a transition so results stay interactive while the
+ * next page renders.
  */
 export function useProductFilters() {
   const router = useRouter();
@@ -33,9 +26,8 @@ export function useProductFilters() {
 
   const targetPath = pathname.startsWith("/products") && !pathname.includes("/products/") ? pathname : "/products";
 
-  // Latest-value refs, written from an effect rather than during render: this
-  // is what lets every mutator below be `useCallback([])`-stable while still
-  // reading the current URL state when it fires.
+  // Latest-value refs, written from an effect, so the mutators below can stay
+  // reference-stable while still reading the current query.
   const queryRef = useRef(query);
   const pathRef = useRef(targetPath);
 
@@ -44,7 +36,7 @@ export function useProductFilters() {
     pathRef.current = targetPath;
   });
 
-  /** Applies a patch and resets to page 1 unless the patch sets the page itself. */
+  /** Applies a patch, resetting to page 1 unless the patch sets the page. */
   const update = useCallback(
     (patch: Partial<ProductQuery>, options: { resetPage?: boolean; scroll?: boolean } = {}) => {
       const { resetPage = patch.page === undefined, scroll = false } = options;
@@ -86,7 +78,7 @@ export function useProductFilters() {
   const setSort = useCallback((sort: SortOption) => update({ sort }), [update]);
   const setLimit = useCallback((limit: number) => update({ limit }), [update]);
 
-  // Page changes scroll back to the top; filter changes deliberately do not.
+  // Page changes scroll to the top; filter changes do not.
   const setPage = useCallback((page: number) => update({ page }, { resetPage: false, scroll: true }), [update]);
 
   const clearAll = useCallback(() => {

@@ -19,13 +19,9 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { quickViewClosed } from "@/store/slices/ui.slice";
 
 /**
- * Quick view - the client-side slice of the data stack.
- *
- * Mounted once in the layout and driven by `ui.quickViewSlug`, so the 24 cards
- * on a listing page share one dialog instead of each carrying its own.
- * The fetch runs through hook -> service -> axios -> route handler and is
- * disabled (`enabled: false`) until a slug is actually set, so closing the
- * dialog aborts any request still in flight.
+ * Mounted once in the layout and driven by `ui.quickViewSlug`, so every card
+ * shares one dialog. Nothing is fetched until a slug is set, and closing
+ * aborts a request still in flight.
  */
 export function QuickViewDialog() {
   const slug = useAppSelector((state) => state.ui.quickViewSlug);

@@ -20,16 +20,8 @@ import {
 import type { CartLineInput } from "@/types";
 
 /**
- * Cart facade.
- *
- * Components dispatch through these callbacks instead of importing actions, so
- * the store shape stays an implementation detail. Every callback is
- * `useCallback`-stable (dispatch never changes identity), which is what allows
- * `ProductCard` to be a `React.memo` component that does not re-render when an
- * unrelated line in the cart changes.
- *
- * Read `totals` only where you need it - the header badge subscribes to the
- * count selector instead, so adding an item does not re-render the whole page.
+ * Cart facade so components do not import actions directly. The callbacks are
+ * reference-stable, so the memoised rows and buttons can skip re-renders.
  */
 export function useCart() {
   const dispatch = useAppDispatch();

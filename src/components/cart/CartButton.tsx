@@ -8,11 +8,8 @@ import { selectCartItemCount } from "@/store/selectors/cart.selectors";
 import { cartDrawerToggled } from "@/store/slices/ui.slice";
 
 /**
- * Header cart button.
- *
- * Subscribes to the item *count* only. Because the selector returns a number,
- * react-redux bails out of re-rendering the header when anything else in the
- * cart changes - quantities, prices, line order.
+ * Subscribes to the item count only, so the header does not re-render when
+ * anything else in the cart changes.
  */
 export function CartButton() {
   const count = useAppSelector(selectCartItemCount);

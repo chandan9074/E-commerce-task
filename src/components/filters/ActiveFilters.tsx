@@ -27,7 +27,7 @@ const ChipButton = memo(function ChipButton({ label, onRemove }: { label: string
   );
 });
 
-/** Chips that mirror the URL exactly - what you see is what the server got. */
+/** Chips mirroring the filters currently in the URL. */
 export function ActiveFilters({ facets }: { facets: ProductFacets }) {
   const { query, activeFilterCount, clearFilter, clearAll } = useProductFilters();
 

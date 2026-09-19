@@ -2,7 +2,7 @@ import { COMMERCE } from "@/lib/constants";
 import { roundMoney } from "@/lib/utils/format";
 import type { CartItem, CartTotals } from "@/types";
 
-/** Pure pricing rules. The reducer, the selectors and checkout all call these. */
+// Pricing rules, shared by the reducer, the selectors and checkout.
 
 export function clampQuantity(quantity: number, stock: number) {
   const ceiling = Math.max(0, Math.min(COMMERCE.maxQuantityPerLine, stock));
@@ -14,7 +14,7 @@ export function computeTotals(items: CartItem[]): CartTotals {
   let subtotal = 0;
   let savings = 0;
 
-  // One pass, not five - this runs on every cart mutation.
+  // Single pass; runs on every cart mutation.
   for (const item of items) {
     itemCount += item.quantity;
     subtotal += item.price * item.quantity;

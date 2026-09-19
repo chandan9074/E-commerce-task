@@ -24,9 +24,8 @@ interface PageProps {
 }
 
 /**
- * Pre-render the 60 best sellers at build time; everything else is rendered on
- * first request and then cached. Building all 520 pages up front would slow the
- * build for products almost nobody opens.
+ * Pre-renders the 60 best sellers at build time; the rest are rendered on
+ * first request and cached.
  */
 export async function generateStaticParams() {
   return productRepository.getTrending(60).map((product) => ({ slug: product.slug }));
@@ -72,11 +71,8 @@ const GUARANTEES = [
 ];
 
 /**
- * Product detail - a **Server Component**.
- *
- * Reads the product in-process, so the HTML arrives complete with price, stock,
- * specs, reviews and JSON-LD. Only the gallery and the purchase panel hydrate.
- * An unknown slug calls `notFound()` and renders `not-found.tsx` with a 404.
+ * Reads the product in-process, so price, stock, specs, reviews and JSON-LD
+ * are all in the HTML. Only the gallery and the purchase panel hydrate.
  */
 export default async function ProductDetailPage({ params }: PageProps) {
   const { slug } = await params;

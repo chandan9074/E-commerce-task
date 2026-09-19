@@ -4,24 +4,15 @@ import { NextResponse, type NextRequest } from "next/server";
 import { ApiError } from "./http-error";
 import type { ApiFailure, ApiMeta, ApiSuccess } from "@/types";
 
-/**
- * Route-handler plumbing.
- *
- * Every endpoint returns the same envelope and the same meta block, and every
- * thrown error becomes a typed failure - handlers themselves only contain
- * business logic.
- */
-
 export interface RouteResult<T> {
   data: T;
-  /** Response `Cache-Control`; defaults to a short shared cache. */
+  /** Response `Cache-Control`. */
   cacheControl?: string;
   status?: number;
   meta?: Record<string, unknown>;
 }
 
 export const CACHE = {
-  /** Catalogue data changes rarely; the browser may reuse it while revalidating. */
   catalogue: "public, s-maxage=300, stale-while-revalidate=1800",
   listing: "public, s-maxage=60, stale-while-revalidate=300",
   none: "no-store",
@@ -67,10 +58,7 @@ export function createRouteHandler<Ctx>(handler: Handler<Ctx>) {
   };
 }
 
-/**
- * Simulates real-world network latency for the mock backend so the loading and
- * skeleton states are actually exercised in development.
- */
+/** Artificial latency in development so loading states are visible. */
 export async function simulateLatency(min = 60, max = 220) {
   if (process.env.NODE_ENV === "production" || process.env.NEXT_PUBLIC_API_DELAY === "0") return;
   const ms = Math.floor(Math.random() * (max - min)) + min;
